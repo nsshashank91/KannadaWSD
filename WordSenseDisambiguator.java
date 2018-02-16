@@ -242,7 +242,7 @@ public class WordSenseDisambiguator {
 			}
 			inputLinkedList.add(i, word);
 		}
-		// System.out.println("Polysemy word is " + polysemyWord);
+		System.out.println("Polysemy word is " + polysemyWord);
 	}
 
 	private void extractPOSTagging() throws IOException {
@@ -281,11 +281,11 @@ public class WordSenseDisambiguator {
 			}
 
 		}
-		/*
-		 * Collection<Entry<String, String>> entries = word_pos_map.entries();
-		 * entries.forEach(item -> System.out.println(item.getKey() + " :: " +
-		 * item.getValue()));
-		 */
+		
+		 Collection<Entry<String, String>> entries = word_pos_map.entries();
+		 entries.forEach(item -> System.out.println(item.getKey() + " :: " +
+		 item.getValue()));
+		 
 
 	}
 
@@ -331,11 +331,11 @@ public class WordSenseDisambiguator {
 				}
 			}
 
-			/*
-			 * for (String[] semanticUnit : semanticsList) {
-			 * System.out.println("POS = " + semanticUnit[0]);
-			 * System.out.println("Semantic = " + semanticUnit[1]); }
-			 */
+			
+			for (String[] semanticUnit : semanticsList) {
+			 System.out.println("POS = " + semanticUnit[0]);
+			 System.out.println("Semantic = " + semanticUnit[1]); }
+			 
 		}
 
 	}
