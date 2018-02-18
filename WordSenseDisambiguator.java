@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -89,12 +90,14 @@ public class WordSenseDisambiguator {
 										.split(" ");
 								List<String> otherTokensList = Arrays
 										.asList(splitOtherTokens);
-								LinkedList<String> otherTokensLinkedList = new LinkedList<String>();
+								List<String> otherTokensLinkedList = new CopyOnWriteArrayList<String>();
 								otherTokensLinkedList.addAll(otherTokensList);
-								while (otherTokensLinkedList
-										.contains(polysemyWord)) {
-									otherTokensLinkedList.remove(polysemyWord);
+								for(String polysemyToken:otherTokensLinkedList){
+									if(polysemyToken.contains(polysemyWord)){
+										otherTokensLinkedList.remove(polysemyToken);
+									}
 								}
+								
 								System.out
 										.println("Replaced Semantics for Noun is "
 												+ otherTokensLinkedList);
@@ -156,8 +159,8 @@ public class WordSenseDisambiguator {
 							continue;
 						}
 					}
-					System.out.println("Matching word is "
-							+ matchedLongestWordForNoun);
+					/*System.out.println("Matching word is "
+							+ matchedLongestWordForNoun);*/
 					System.out.println("Matched meaning is "
 							+ matchedSemanticSentenceForNoun);
 				} else if (entry.getValue().equals("VM")) {
@@ -203,7 +206,7 @@ public class WordSenseDisambiguator {
 											// if(matchingWordForVerb.contains(polysemyWord)){
 											if (matchedLongestWordForVerb == null
 													|| matchingWordForVerb
-															.length() <= matchedLongestWordForVerb
+															.length() > matchedLongestWordForVerb
 															.length()) {
 												matchedLongestWordForVerb = matchingWordForVerb;
 												matchedSemanticSentenceForVerb = tokensOtherThanPolysemy;
@@ -217,7 +220,7 @@ public class WordSenseDisambiguator {
 											// if(!matchingWordForVerb.contains(polysemyWord)){
 											if (matchedLongestWordForVerb == null
 													|| matchedLongestWordForVerb
-															.length() <= matchedLongestWordForVerb
+															.length() > matchedLongestWordForVerb
 															.length()) {
 												matchedLongestWordForVerb = matchingWordForVerb;
 												matchedSemanticSentenceForVerb = tokensOtherThanPolysemy;
@@ -233,8 +236,8 @@ public class WordSenseDisambiguator {
 							continue;
 						}
 					}
-					System.out.println("Matching word is "
-							+ matchedLongestWordForVerb);
+					/*System.out.println("Matching word is "
+							+ matchedLongestWordForVerb);*/
 					System.out.println("Matched meaning is "
 							+ matchedSemanticSentenceForVerb);
 				}
