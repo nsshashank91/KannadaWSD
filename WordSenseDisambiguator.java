@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -20,22 +23,23 @@ public class WordSenseDisambiguator {
 
 	private String polysemyWord;
 
+	private String secondaryPolysemyWord;
+
 	private Multimap<String, String> word_pos_map;
 
 	private List<String[]> semanticsList;
-	
+
 	private LinkedList<String> inputLinkedList;
-	
+
 	private String matchedLongestWordForNoun;
-	
+
 	private String matchedSemanticSentenceForNoun;
 
 	private String matchedLongestWordForVerb;
-	
+
 	private String matchedSemanticSentenceForVerb;
-	
-	private List<String> rootWords;
-	
+
+	private Map<String, String> rootWords;
 
 	public static void main(String[] args) throws JSchException, IOException {
 
@@ -53,6 +57,8 @@ public class WordSenseDisambiguator {
 		System.out.println("*********************");
 		System.out.println("Input is " + inputLinkedList.toString());
 		System.out.println("Polysemy word = " + polysemyWord);
+		System.out
+				.println("Secondary Polysemy word = " + secondaryPolysemyWord);
 		Collection<Entry<String, String>> entries = word_pos_map.entries();
 		entries.forEach(item -> System.out.println(item.getKey() + " :: "
 				+ item.getValue()));
@@ -63,36 +69,51 @@ public class WordSenseDisambiguator {
 		System.out.println("*********************");
 		String matchingWordForNoun = null;
 		String matchingWordForVerb = null;
-		for(Entry<String, String> entry:entries){
-			if(entry.getKey().contains(polysemyWord)){
-				if(entry.getValue().equals("NN")){
-					for(String[] semanticUnit :semanticsList){
-						if(semanticUnit[0].equals("noun")){
-							String tokensOtherThanPolysemy=null;
-							if(semanticUnit[1].contains(polysemyWord)){
-								//tokensOtherThanPolysemy=semanticUnit[1].replaceAll(polysemyWord, "");
-								tokensOtherThanPolysemy=semanticUnit[1];
-								String[] splitOtherTokens = tokensOtherThanPolysemy.split(" ");
-								List<String> otherTokensList = Arrays.asList(splitOtherTokens);
+		Set<Entry<String, String>> rootSet = rootWords.entrySet();
+		for (Entry<String, String> rootEntry : rootSet) {
+			System.out.println("Root values = " + rootEntry.getKey() + " "
+					+ rootEntry.getValue());
+		}
+		for (Entry<String, String> entry : entries) {
+			if (entry.getKey().contains(polysemyWord)
+					|| entry.getKey().contains(secondaryPolysemyWord)) {
+				if (entry.getValue().equals("NN")) {
+					for (String[] semanticUnit : semanticsList) {
+						if (semanticUnit[0].equals("noun")) {
+							String tokensOtherThanPolysemy = null;
+							if (semanticUnit[1].contains(polysemyWord)) {
+								// tokensOtherThanPolysemy=semanticUnit[1].replaceAll(polysemyWord,
+								// "");
+								tokensOtherThanPolysemy = semanticUnit[1];
+								String[] splitOtherTokens = tokensOtherThanPolysemy
+										.split(" ");
+								List<String> otherTokensList = Arrays
+										.asList(splitOtherTokens);
 								LinkedList<String> otherTokensLinkedList = new LinkedList<String>();
 								otherTokensLinkedList.addAll(otherTokensList);
-								while(otherTokensLinkedList.contains(polysemyWord)){
+								while (otherTokensLinkedList
+										.contains(polysemyWord)) {
 									otherTokensLinkedList.remove(polysemyWord);
 								}
-								System.out.println("Replaced Semantics for Noun is "+otherTokensLinkedList);
-								for(String nounSemanticMatcher:inputLinkedList){
-									for(String otherSemanticToken:otherTokensLinkedList){
-										int length =0;
-										if(nounSemanticMatcher.length()<=otherSemanticToken.length()){
-											length = nounSemanticMatcher.length();
-										}
-										else{
-											length = otherSemanticToken.length();
+								System.out
+										.println("Replaced Semantics for Noun is "
+												+ otherTokensLinkedList);
+								for (String nounSemanticMatcher : inputLinkedList) {
+									for (String otherSemanticToken : otherTokensLinkedList) {
+										int length = 0;
+										if (nounSemanticMatcher.length() <= otherSemanticToken
+												.length()) {
+											length = nounSemanticMatcher
+													.length();
+										} else {
+											length = otherSemanticToken
+													.length();
 										}
 										int matchLength = 0;
 										boolean prestine = true;
 										for (int j = 0; j < length; j++) {
-											if (nounSemanticMatcher.charAt(j) == otherSemanticToken.charAt(j)) {
+											if (nounSemanticMatcher.charAt(j) == otherSemanticToken
+													.charAt(j)) {
 												continue;
 											} else {
 												matchLength = j;
@@ -102,60 +123,74 @@ public class WordSenseDisambiguator {
 										}
 										if (prestine) {
 											matchingWordForNoun = nounSemanticMatcher;
-											if(!matchingWordForNoun.contains(polysemyWord)){
-												if(matchedLongestWordForNoun==null||matchedLongestWordForNoun.length()<matchingWordForNoun.length()){
-													matchedLongestWordForNoun=matchingWordForNoun;
-													matchedSemanticSentenceForNoun=tokensOtherThanPolysemy;
-												}
-												break;
+											// if(!matchingWordForNoun.contains(polysemyWord)){
+											if (matchedLongestWordForNoun == null
+													|| matchingWordForNoun
+															.length() > matchedLongestWordForNoun
+															.length()) {
+												matchedLongestWordForNoun = matchingWordForNoun;
+												matchedSemanticSentenceForNoun = tokensOtherThanPolysemy;
 											}
+											break;
+											// }
 										}
 										if (matchLength > 2) {
-											matchingWordForNoun = otherSemanticToken.substring(0, matchLength);
-											if(!matchingWordForNoun.contains(polysemyWord)){
-												if(matchedLongestWordForNoun==null||matchedLongestWordForNoun.length()<matchingWordForNoun.length()){
-													matchedLongestWordForNoun=matchingWordForNoun;
-													matchedSemanticSentenceForNoun=tokensOtherThanPolysemy;
-												}
-												break;
+											matchingWordForNoun = otherSemanticToken
+													.substring(0, matchLength);
+											// if(!matchingWordForNoun.contains(polysemyWord)){
+											if (matchedLongestWordForNoun == null
+													|| matchingWordForNoun
+															.length() > matchedLongestWordForNoun
+															.length()) {
+												matchedLongestWordForNoun = matchingWordForNoun;
+												matchedSemanticSentenceForNoun = tokensOtherThanPolysemy;
 											}
-											
+											break;
+											// }
+
 										}
 									}
 								}
 							}
-						}
-						else{
+						} else {
 							continue;
 						}
 					}
-					System.out.println("Matching word is "+matchedLongestWordForNoun);
-					System.out.println("Matched meaning is "+matchedSemanticSentenceForNoun);
-				}
-				else if(entry.getValue().equals("VM")){
-					for(String[] semanticUnit :semanticsList){
-						if(semanticUnit[0].equals("verb")){
-							String tokensOtherThanPolysemy=null;
-							if(semanticUnit[1].contains(polysemyWord)){
-								tokensOtherThanPolysemy=semanticUnit[1];
-								String[] splitOtherTokens = tokensOtherThanPolysemy.split(" ");
-								List<String> otherTokensList = Arrays.asList(splitOtherTokens);
+					System.out.println("Matching word is "
+							+ matchedLongestWordForNoun);
+					System.out.println("Matched meaning is "
+							+ matchedSemanticSentenceForNoun);
+				} else if (entry.getValue().equals("VM")) {
+					for (String[] semanticUnit : semanticsList) {
+						if (semanticUnit[0].equals("verb")) {
+							String tokensOtherThanPolysemy = null;
+							if (semanticUnit[1].contains(polysemyWord)) {
+								tokensOtherThanPolysemy = semanticUnit[1];
+								String[] splitOtherTokens = tokensOtherThanPolysemy
+										.split(" ");
+								List<String> otherTokensList = Arrays
+										.asList(splitOtherTokens);
 								LinkedList<String> otherTokensLinkedList = new LinkedList<String>();
 								otherTokensLinkedList.addAll(otherTokensList);
-								System.out.println("Replaced Semantics for Verb is "+otherTokensLinkedList);
-								for(String verbSemanticMatcher:inputLinkedList){
-									for(String otherSemanticToken:otherTokensLinkedList){
-										int length =0;
-										if(verbSemanticMatcher.length()<otherSemanticToken.length()){
-											length = verbSemanticMatcher.length();
-										}
-										else{
-											length = otherSemanticToken.length();
+								System.out
+										.println("Replaced Semantics for Verb is "
+												+ otherTokensLinkedList);
+								for (String verbSemanticMatcher : inputLinkedList) {
+									for (String otherSemanticToken : otherTokensLinkedList) {
+										int length = 0;
+										if (verbSemanticMatcher.length() < otherSemanticToken
+												.length()) {
+											length = verbSemanticMatcher
+													.length();
+										} else {
+											length = otherSemanticToken
+													.length();
 										}
 										int matchLength = 0;
 										boolean prestine = true;
 										for (int j = 0; j < length; j++) {
-											if (verbSemanticMatcher.charAt(j) == otherSemanticToken.charAt(j)) {
+											if (verbSemanticMatcher.charAt(j) == otherSemanticToken
+													.charAt(j)) {
 												continue;
 											} else {
 												matchLength = j;
@@ -165,35 +200,43 @@ public class WordSenseDisambiguator {
 										}
 										if (prestine) {
 											matchingWordForVerb = verbSemanticMatcher;
-											if(matchingWordForVerb.contains(polysemyWord)){
-												if(matchedLongestWordForVerb==null||matchedLongestWordForVerb.length()<matchingWordForVerb.length()){
-													matchedLongestWordForVerb=matchingWordForVerb;
-													matchedSemanticSentenceForVerb=tokensOtherThanPolysemy;
-												}
-												break;
+											// if(matchingWordForVerb.contains(polysemyWord)){
+											if (matchedLongestWordForVerb == null
+													|| matchingWordForVerb
+															.length() <= matchedLongestWordForVerb
+															.length()) {
+												matchedLongestWordForVerb = matchingWordForVerb;
+												matchedSemanticSentenceForVerb = tokensOtherThanPolysemy;
 											}
+											break;
+											// }
 										}
 										if (matchLength > 2) {
-											matchingWordForVerb = otherSemanticToken.substring(0, matchLength);
-											if(!matchingWordForVerb.contains(polysemyWord)){
-												if(matchedLongestWordForVerb==null||matchedLongestWordForVerb.length()<matchingWordForVerb.length()){
-													matchedLongestWordForVerb=matchingWordForVerb;
-													matchedSemanticSentenceForVerb=tokensOtherThanPolysemy;
-												}
-												break;
+											matchingWordForVerb = otherSemanticToken
+													.substring(0, matchLength);
+											// if(!matchingWordForVerb.contains(polysemyWord)){
+											if (matchedLongestWordForVerb == null
+													|| matchedLongestWordForVerb
+															.length() <= matchedLongestWordForVerb
+															.length()) {
+												matchedLongestWordForVerb = matchingWordForVerb;
+												matchedSemanticSentenceForVerb = tokensOtherThanPolysemy;
 											}
-											
+											break;
+											// }
+
 										}
 									}
 								}
 							}
-						}
-						else{
+						} else {
 							continue;
 						}
 					}
-					System.out.println("Matching word is "+matchedLongestWordForVerb);
-					System.out.println("Matched meaning is "+matchedSemanticSentenceForVerb);
+					System.out.println("Matching word is "
+							+ matchedLongestWordForVerb);
+					System.out.println("Matched meaning is "
+							+ matchedSemanticSentenceForVerb);
 				}
 			}
 		}
@@ -245,44 +288,54 @@ public class WordSenseDisambiguator {
 			inputLinkedList.add(i, word);
 		}
 		String rootMatchingWord = null;
-		 for(String rootWord:rootWords){
-			 int length =0;
-				if(polysemyWord.length()<=rootWord.length()){
-					length = polysemyWord.length();
+		for (Entry<String, String> rootWord : rootWords.entrySet()) {
+			int length = 0;
+			String rootValue = rootWord.getValue();
+			if (polysemyWord.length() <= rootValue.length()) {
+				length = polysemyWord.length();
+			} else {
+				length = rootValue.length();
+			}
+			int matchLength = 0;
+			boolean prestine = true;
+			for (int j = 0; j < length; j++) {
+				if (rootValue.charAt(j) == polysemyWord.charAt(j)) {
+					continue;
+				} else {
+					matchLength = j;
+					prestine = false;
+					break;
 				}
-				else{
-					length = rootWord.length();
+			}
+			if (prestine) {
+				String rootPrestineWord = rootValue;
+				if (rootMatchingWord == null
+						|| rootPrestineWord.length() < rootMatchingWord
+								.length()) {
+					rootMatchingWord = rootPrestineWord;
 				}
-				int matchLength = 0;
-				boolean prestine = true;
-				for (int j = 0; j < length; j++) {
-					if (rootWord.charAt(j) == polysemyWord.charAt(j)) {
-						continue;
-					} else {
-						matchLength = j;
-						prestine = false;
-						break;
-					}
+			}
+			if (matchLength > 2) {
+				String rootSubstring = rootValue.substring(0, matchLength);
+				if (rootMatchingWord == null
+						|| rootSubstring.length() < rootMatchingWord.length()) {
+					rootMatchingWord = rootSubstring;
 				}
-				if (prestine) {
-					String rootPrestineWord = rootWord;
-					if(rootMatchingWord==null||rootPrestineWord.length()<rootMatchingWord.length()){
-						rootMatchingWord = rootPrestineWord;
-					}
-				}
-				if (matchLength > 2) {
-					String rootSubstring = rootWord.substring(0, matchLength);
-					if(rootMatchingWord==null||rootSubstring.length()<rootMatchingWord.length()){
-						rootMatchingWord = rootSubstring;
-					}
-				}
-		 }
+			}
+		}
 		System.out.println("Polysemy word is " + rootMatchingWord);
-		polysemyWord = rootMatchingWord;
+		if (polysemyWord.equals(rootMatchingWord)) {
+			polysemyWord = rootMatchingWord;
+			secondaryPolysemyWord = rootMatchingWord;
+		} else {
+			secondaryPolysemyWord = polysemyWord;
+			polysemyWord = rootMatchingWord;
+		}
+
 	}
 
 	private void extractPOSTagging() throws IOException {
-		rootWords = new ArrayList<String>();
+		rootWords = new LinkedHashMap<String, String>();
 		List<String> inputWordsList = null;
 		BufferedReader brInput = new BufferedReader(new FileReader("sen31"));
 		while (true) {
@@ -307,28 +360,28 @@ public class WordSenseDisambiguator {
 			} else {
 				// System.out.println(line);
 				String[] split = line.split("<");
-				
+
 				// System.out.println(split[0]);
 				String indexedToken = split[0];
 				String metaToken = split[1];
 				String[] metaTokenArray = metaToken.split(",");
 				String[] metaData = metaTokenArray[0].split("'");
 				String rootWord = metaData[1];
-				rootWords.add(rootWord);
+
 				String[] word_pos = indexedToken.split("\\s");
 				/*
 				 * System.out.println(word_pos[1]);
 				 * System.out.println(word_pos[2]);
 				 */
 				word_pos_map.put(word_pos[1], word_pos[2]);
+				rootWords.put(word_pos[1], rootWord);
 			}
 
 		}
-		
-		 Collection<Entry<String, String>> entries = word_pos_map.entries();
-		 entries.forEach(item -> System.out.println(item.getKey() + " :: " +
-		 item.getValue()));
-		 
+
+		Collection<Entry<String, String>> entries = word_pos_map.entries();
+		entries.forEach(item -> System.out.println(item.getKey() + " :: "
+				+ item.getValue()));
 
 	}
 
@@ -374,11 +427,11 @@ public class WordSenseDisambiguator {
 				}
 			}
 
-			
 			for (String[] semanticUnit : semanticsList) {
-			 System.out.println("POS = " + semanticUnit[0]);
-			 System.out.println("Semantic = " + semanticUnit[1]); }
-			 
+				System.out.println("POS = " + semanticUnit[0]);
+				System.out.println("Semantic = " + semanticUnit[1]);
+			}
+
 		}
 
 	}
