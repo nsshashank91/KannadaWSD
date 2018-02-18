@@ -34,6 +34,8 @@ public class WordSenseDisambiguator {
 	
 	private String matchedSemanticSentenceForVerb;
 	
+	private List<String> rootWords;
+	
 
 	public static void main(String[] args) throws JSchException, IOException {
 
@@ -81,7 +83,7 @@ public class WordSenseDisambiguator {
 								for(String nounSemanticMatcher:inputLinkedList){
 									for(String otherSemanticToken:otherTokensLinkedList){
 										int length =0;
-										if(nounSemanticMatcher.length()<otherSemanticToken.length()){
+										if(nounSemanticMatcher.length()<=otherSemanticToken.length()){
 											length = nounSemanticMatcher.length();
 										}
 										else{
@@ -199,7 +201,7 @@ public class WordSenseDisambiguator {
 
 	private void readFromWordNet() {
 		ReadFromWordnet readWordNet = new ReadFromWordnet();
-		readWordNet.readFromWordNet();
+		readWordNet.readFromWordNet(polysemyWord);
 
 	}
 
@@ -242,10 +244,45 @@ public class WordSenseDisambiguator {
 			}
 			inputLinkedList.add(i, word);
 		}
-		System.out.println("Polysemy word is " + polysemyWord);
+		String rootMatchingWord = null;
+		 for(String rootWord:rootWords){
+			 int length =0;
+				if(polysemyWord.length()<=rootWord.length()){
+					length = polysemyWord.length();
+				}
+				else{
+					length = rootWord.length();
+				}
+				int matchLength = 0;
+				boolean prestine = true;
+				for (int j = 0; j < length; j++) {
+					if (rootWord.charAt(j) == polysemyWord.charAt(j)) {
+						continue;
+					} else {
+						matchLength = j;
+						prestine = false;
+						break;
+					}
+				}
+				if (prestine) {
+					String rootPrestineWord = rootWord;
+					if(rootMatchingWord==null||rootPrestineWord.length()<rootMatchingWord.length()){
+						rootMatchingWord = rootPrestineWord;
+					}
+				}
+				if (matchLength > 2) {
+					String rootSubstring = rootWord.substring(0, matchLength);
+					if(rootMatchingWord==null||rootSubstring.length()<rootMatchingWord.length()){
+						rootMatchingWord = rootSubstring;
+					}
+				}
+		 }
+		System.out.println("Polysemy word is " + rootMatchingWord);
+		polysemyWord = rootMatchingWord;
 	}
 
 	private void extractPOSTagging() throws IOException {
+		rootWords = new ArrayList<String>();
 		List<String> inputWordsList = null;
 		BufferedReader brInput = new BufferedReader(new FileReader("sen31"));
 		while (true) {
@@ -270,8 +307,14 @@ public class WordSenseDisambiguator {
 			} else {
 				// System.out.println(line);
 				String[] split = line.split("<");
+				
 				// System.out.println(split[0]);
 				String indexedToken = split[0];
+				String metaToken = split[1];
+				String[] metaTokenArray = metaToken.split(",");
+				String[] metaData = metaTokenArray[0].split("'");
+				String rootWord = metaData[1];
+				rootWords.add(rootWord);
 				String[] word_pos = indexedToken.split("\\s");
 				/*
 				 * System.out.println(word_pos[1]);
