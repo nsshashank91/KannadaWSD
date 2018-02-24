@@ -463,7 +463,13 @@ public class WordSenseDisambiguatorV3 {
 			inputLinkedList.remove(i);
 			// System.out.println(linkedList);
 			for (String otherToken : inputLinkedList) {
-				int length = word.length();
+				int length = 0;
+				if(word.length()<=otherToken.length()){
+					length=word.length();
+				}
+				else{
+					length=otherToken.length();
+				}
 				int matchLength = 0;
 				boolean prestine = true;
 				for (int j = 0; j < length; j++) {
