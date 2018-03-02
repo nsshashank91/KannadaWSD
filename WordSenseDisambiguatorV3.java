@@ -41,7 +41,6 @@ public class WordSenseDisambiguatorV3 {
 	private String matchedSemanticSentenceForVerb;
 
 	private Map<String, String> rootWords;
-	
 
 	public static void main(String[] args) throws JSchException, IOException {
 
@@ -76,28 +75,26 @@ public class WordSenseDisambiguatorV3 {
 			System.out.println("Root values = " + rootEntry.getKey() + " "
 					+ rootEntry.getValue());
 		}
-		List<String> posScenarios= new ArrayList<String>();
-		
+		List<String> posScenarios = new ArrayList<String>();
+
 		for (Entry<String, String> entry : entries) {
 			if (entry.getKey().contains(polysemyWord)
 					|| entry.getKey().contains(secondaryPolysemyWord)) {
 				if (entry.getValue().equals("NN")) {
 					posScenarios.add("NN");
-				}
-				else if (entry.getValue().equals("VM")){
+				} else if (entry.getValue().equals("VM")) {
 					posScenarios.add("VM");
 				}
 			}
 		}
 		String posScenario;
-		if(posScenarios.contains("NN")&&posScenarios.contains("VM")){
+		if (posScenarios.contains("NN") && posScenarios.contains("VM")) {
 			posScenario = "differentPOS";
-		}
-		else{
+		} else {
 			posScenario = "samePOS";
 		}
-		if(posScenario.equals("differentPOS")){
-			System.out.println("***********"+posScenario+"***********");
+		if (posScenario.equals("differentPOS")) {
+			System.out.println("***********" + posScenario + "***********");
 			for (Entry<String, String> entry : entries) {
 				if (entry.getKey().contains(polysemyWord)
 						|| entry.getKey().contains(secondaryPolysemyWord)) {
@@ -114,14 +111,16 @@ public class WordSenseDisambiguatorV3 {
 									List<String> otherTokensList = Arrays
 											.asList(splitOtherTokens);
 									List<String> otherTokensLinkedList = new CopyOnWriteArrayList<String>();
-									otherTokensLinkedList.addAll(otherTokensList);
+									otherTokensLinkedList
+											.addAll(otherTokensList);
 									for (String polysemyToken : otherTokensLinkedList) {
-										if (polysemyToken.contains(polysemyWord)) {
+										if (polysemyToken
+												.contains(polysemyWord)) {
 											otherTokensLinkedList
 													.remove(polysemyToken);
 										}
 									}
-	
+
 									System.out
 											.println("Replaced Semantics for Noun is "
 													+ otherTokensLinkedList);
@@ -139,7 +138,8 @@ public class WordSenseDisambiguatorV3 {
 											int matchLength = 0;
 											boolean prestine = true;
 											for (int j = 0; j < length; j++) {
-												if (nounSemanticMatcher.charAt(j) == otherSemanticToken
+												if (nounSemanticMatcher
+														.charAt(j) == otherSemanticToken
 														.charAt(j)) {
 													continue;
 												} else {
@@ -163,7 +163,8 @@ public class WordSenseDisambiguatorV3 {
 											}
 											if (matchLength > 2) {
 												matchingWordForNoun = otherSemanticToken
-														.substring(0, matchLength);
+														.substring(0,
+																matchLength);
 												// if(!matchingWordForNoun.contains(polysemyWord)){
 												if (matchedLongestWordForNoun == null
 														|| matchingWordForNoun
@@ -174,7 +175,7 @@ public class WordSenseDisambiguatorV3 {
 												}
 												break;
 												// }
-	
+
 											}
 										}
 									}
@@ -200,7 +201,8 @@ public class WordSenseDisambiguatorV3 {
 									List<String> otherTokensList = Arrays
 											.asList(splitOtherTokens);
 									LinkedList<String> otherTokensLinkedList = new LinkedList<String>();
-									otherTokensLinkedList.addAll(otherTokensList);
+									otherTokensLinkedList
+											.addAll(otherTokensList);
 									System.out
 											.println("Replaced Semantics for Verb is "
 													+ otherTokensLinkedList);
@@ -218,7 +220,8 @@ public class WordSenseDisambiguatorV3 {
 											int matchLength = 0;
 											boolean prestine = true;
 											for (int j = 0; j < length; j++) {
-												if (verbSemanticMatcher.charAt(j) == otherSemanticToken
+												if (verbSemanticMatcher
+														.charAt(j) == otherSemanticToken
 														.charAt(j)) {
 													continue;
 												} else {
@@ -242,7 +245,8 @@ public class WordSenseDisambiguatorV3 {
 											}
 											if (matchLength > 2) {
 												matchingWordForVerb = otherSemanticToken
-														.substring(0, matchLength);
+														.substring(0,
+																matchLength);
 												// if(!matchingWordForVerb.contains(polysemyWord)){
 												if (matchedLongestWordForVerb == null
 														|| matchedLongestWordForVerb
@@ -253,7 +257,7 @@ public class WordSenseDisambiguatorV3 {
 												}
 												break;
 												// }
-	
+
 											}
 										}
 									}
@@ -271,9 +275,8 @@ public class WordSenseDisambiguatorV3 {
 					}
 				}
 			}
-		}
-		else{
-			System.out.println("***********"+posScenario+"***********");
+		} else {
+			System.out.println("***********" + posScenario + "***********");
 			for (Entry<String, String> entry : entries) {
 				if (entry.getKey().contains(polysemyWord)
 						|| entry.getKey().contains(secondaryPolysemyWord)) {
@@ -290,14 +293,16 @@ public class WordSenseDisambiguatorV3 {
 									List<String> otherTokensList = Arrays
 											.asList(splitOtherTokens);
 									List<String> otherTokensLinkedList = new CopyOnWriteArrayList<String>();
-									otherTokensLinkedList.addAll(otherTokensList);
+									otherTokensLinkedList
+											.addAll(otherTokensList);
 									for (String polysemyToken : otherTokensLinkedList) {
-										if (polysemyToken.contains(polysemyWord)) {
+										if (polysemyToken
+												.contains(polysemyWord)) {
 											otherTokensLinkedList
 													.remove(polysemyToken);
 										}
 									}
-	
+
 									System.out
 											.println("Replaced Semantics for Noun is "
 													+ otherTokensLinkedList);
@@ -315,7 +320,8 @@ public class WordSenseDisambiguatorV3 {
 											int matchLength = 0;
 											boolean prestine = true;
 											for (int j = 0; j < length; j++) {
-												if (nounSemanticMatcher.charAt(j) == otherSemanticToken
+												if (nounSemanticMatcher
+														.charAt(j) == otherSemanticToken
 														.charAt(j)) {
 													continue;
 												} else {
@@ -339,7 +345,8 @@ public class WordSenseDisambiguatorV3 {
 											}
 											if (matchLength > 2) {
 												matchingWordForNoun = otherSemanticToken
-														.substring(0, matchLength);
+														.substring(0,
+																matchLength);
 												// if(!matchingWordForNoun.contains(polysemyWord)){
 												if (matchedLongestWordForNoun == null
 														|| matchingWordForNoun
@@ -350,7 +357,7 @@ public class WordSenseDisambiguatorV3 {
 												}
 												break;
 												// }
-	
+
 											}
 										}
 									}
@@ -379,40 +386,39 @@ public class WordSenseDisambiguatorV3 {
 		int nounIndex = -1;
 		int matchingIndex = -1;
 		int inputLength = inputLinkedList.size();
-		for(int i=0;i<inputLength;i++){
+		for (int i = 0; i < inputLength; i++) {
 			String word = inputLinkedList.get(i);
-			if(word.contains(matchedNounWord)){
-				System.out.println("Matched word "+word);
+			if (word.contains(matchedNounWord)) {
+				System.out.println("Matched word " + word);
 				matchingIndex = i;
 				break;
 			}
 		}
-		if(matchingIndex!=-1){
+		if (matchingIndex != -1) {
 			int removeIndex = -1;
-			nounIndex=matchingIndex;
-			while(nounIndex!=-1&&nounIndex<inputLength){
-				String prevWord = inputLinkedList.get(nounIndex-1);
-				System.out.println("prev word "+prevWord);
-				int successiveIndex = nounIndex+1;
+			nounIndex = matchingIndex;
+			while (nounIndex != -1 && nounIndex < inputLength) {
+				String prevWord = inputLinkedList.get(nounIndex - 1);
+				System.out.println("prev word " + prevWord);
+				int successiveIndex = nounIndex + 1;
 				String successiveWord = null;
-				if(successiveIndex<inputLength){
+				if (successiveIndex < inputLength) {
 					successiveWord = inputLinkedList.get(successiveIndex);
-					System.out.println("Successive word "+successiveWord);
+					System.out.println("Successive word " + successiveWord);
 				}
-				if(prevWord.contains(polysemyWord)){
-					removeIndex = nounIndex-1;
+				if (prevWord.contains(polysemyWord)) {
+					removeIndex = nounIndex - 1;
 					break;
-				}
-				else if(successiveWord.contains(polysemyWord)){
+				} else if (successiveWord.contains(polysemyWord)) {
 					removeIndex = successiveIndex;
 					break;
 				}
 				nounIndex--;
 			}
-			if(removeIndex!=-1){
-				System.out.println("Remove index = "+removeIndex);
+			if (removeIndex != -1) {
+				System.out.println("Remove index = " + removeIndex);
 				nounSenseList.remove(removeIndex);
-				nounSenseList.remove(matchingIndex-1);
+				nounSenseList.remove(matchingIndex - 1);
 				System.out.println(nounSenseList);
 				startNounSenseAnalysis(nounSenseList);
 			}
@@ -420,21 +426,29 @@ public class WordSenseDisambiguatorV3 {
 	}
 
 	private void startNounSenseAnalysis(List<String> nounSenseList) {
-		for(int i=0;i<nounSenseList.size();i++){
+		for (int i = 0; i < nounSenseList.size(); i++) {
 			String nounWord = nounSenseList.get(i);
-			if(nounWord.equals(polysemyWord)){
-				String nounLinkedWord = nounSenseList.get(i+1);
-				if(nounLinkedWord.endsWith("ನು")||nounLinkedWord.endsWith("ನನ್ನು")||nounLinkedWord.endsWith("ನನ್ನ")||
-						nounLinkedWord.endsWith("ನಿಂದ")||nounLinkedWord.endsWith("ನಿಗೆ")||nounLinkedWord.endsWith("ಗೆ")||
-						nounLinkedWord.endsWith("ನ")||nounLinkedWord.endsWith("ನಲ್ಲಿ")||nounLinkedWord.endsWith("ನೇ")){
+			if (nounWord.equals(polysemyWord)) {
+				String nounLinkedWord = nounSenseList.get(i + 1);
+				if (nounLinkedWord.endsWith("ನು")
+						|| nounLinkedWord.endsWith("ನನ್ನು")
+						|| nounLinkedWord.endsWith("ನನ್ನ")
+						|| nounLinkedWord.endsWith("ನಿಂದ")
+						|| nounLinkedWord.endsWith("ನಿಗೆ")
+						|| nounLinkedWord.endsWith("ಗೆ")
+						|| nounLinkedWord.endsWith("ನ")
+						|| nounLinkedWord.endsWith("ನಲ್ಲಿ")
+						|| nounLinkedWord.endsWith("ನೇ")) {
 					System.out.println("Matched meaning is ವ್ಯಕ್ತಿಯ ಹೆಸರು");
 				}
 				break;
-			}
-			else if(nounWord.contains(polysemyWord)){
-				if(nounWord.endsWith("ನು")||nounWord.endsWith("ನನ್ನು")||nounWord.endsWith("ನನ್ನ")||
-						nounWord.endsWith("ನಿಂದ")||nounWord.endsWith("ನಿಗೆ")||nounWord.endsWith("ಗೆ")||
-						nounWord.endsWith("ನ")||nounWord.endsWith("ನಲ್ಲಿ")||nounWord.endsWith("ನೇ")){
+			} else if (nounWord.contains(polysemyWord)) {
+				if (nounWord.endsWith("ನು") || nounWord.endsWith("ನನ್ನು")
+						|| nounWord.endsWith("ನನ್ನ")
+						|| nounWord.endsWith("ನಿಂದ")
+						|| nounWord.endsWith("ನಿಗೆ") || nounWord.endsWith("ಗೆ")
+						|| nounWord.endsWith("ನ") || nounWord.endsWith("ನಲ್ಲಿ")
+						|| nounWord.endsWith("ನೇ")) {
 					System.out.println("Matched meaning is ವ್ಯಕ್ತಿಯ ಹೆಸರು");
 				}
 				break;
@@ -464,11 +478,10 @@ public class WordSenseDisambiguatorV3 {
 			// System.out.println(linkedList);
 			for (String otherToken : inputLinkedList) {
 				int length = 0;
-				if(word.length()<=otherToken.length()){
-					length=word.length();
-				}
-				else{
-					length=otherToken.length();
+				if (word.length() <= otherToken.length()) {
+					length = word.length();
+				} else {
+					length = otherToken.length();
 				}
 				int matchLength = 0;
 				boolean prestine = true;
@@ -625,7 +638,8 @@ public class WordSenseDisambiguatorV3 {
 					String pos = synsetFragments[0];
 					String synonyms = synsetFragments[1];
 					String gloss = synsetFragments[2];
-					String semantics = synonyms + " " + gloss;
+					String example = synsetFragments[3];
+					String semantics = synonyms + " " + gloss+ " "+example;
 					String[] semanticUnitArray = new String[2];
 					semanticUnitArray[0] = pos;
 					semanticUnitArray[1] = semantics;
@@ -637,9 +651,6 @@ public class WordSenseDisambiguatorV3 {
 				System.out.println("POS = " + semanticUnit[0]);
 				System.out.println("Semantic = " + semanticUnit[1]);
 			}
-
 		}
-
 	}
-
 }
