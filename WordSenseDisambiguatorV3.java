@@ -639,6 +639,7 @@ public class WordSenseDisambiguatorV3 {
 					String synonyms = synsetFragments[1];
 					String gloss = synsetFragments[2];
 					String example = synsetFragments[3];
+					example = example.replaceAll("[\".]", "");
 					String semantics = synonyms + " " + gloss+ " "+example;
 					String[] semanticUnitArray = new String[2];
 					semanticUnitArray[0] = pos;
