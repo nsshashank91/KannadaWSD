@@ -430,26 +430,29 @@ public class WordSenseDisambiguatorV3 {
 			String nounWord = nounSenseList.get(i);
 			if (nounWord.equals(polysemyWord)) {
 				String nounLinkedWord = nounSenseList.get(i + 1);
-				if (nounLinkedWord.endsWith("ನು")
-						|| nounLinkedWord.endsWith("ನನ್ನು")
-						|| nounLinkedWord.endsWith("ನನ್ನ")
-						|| nounLinkedWord.endsWith("ನಿಂದ")
-						|| nounLinkedWord.endsWith("ನಿಗೆ")
+				if (nounLinkedWord.endsWith("ನು")||nounLinkedWord.endsWith("ಳು")||nounLinkedWord.endsWith("ರು")
+						|| nounLinkedWord.endsWith("ನನ್ನು")||nounLinkedWord.endsWith("ಳನ್ನು")||nounLinkedWord.endsWith("ರನ್ನು")
+						|| nounLinkedWord.endsWith("ನನ್ನ")||nounLinkedWord.endsWith("ಳನ್ನ")||nounLinkedWord.endsWith("ರನ್ನ")
+						|| nounLinkedWord.endsWith("ನಿಂದ")|| nounLinkedWord.endsWith("ಳಿಂದ")||nounLinkedWord.endsWith("ರಿಂದ")
+						|| nounLinkedWord.endsWith("ನಿಗೆ")||nounLinkedWord.endsWith("ಳಿಗೆ")||nounLinkedWord.endsWith("ರಿಗೆ")
 						|| nounLinkedWord.endsWith("ಗೆ")
-						|| nounLinkedWord.endsWith("ನ")
-						|| nounLinkedWord.endsWith("ನಲ್ಲಿ")
-						|| nounLinkedWord.endsWith("ನೇ")) {
-					System.out.println("Matched meaning is ವ್ಯಕ್ತಿಯ ಹೆಸರು");
+						|| nounLinkedWord.endsWith("ನ")||nounLinkedWord.endsWith("ಳ")||nounLinkedWord.endsWith("ರ")
+						|| nounLinkedWord.endsWith("ನಲ್ಲಿ")||nounLinkedWord.endsWith("ಳಲ್ಲಿ")||nounLinkedWord.endsWith("ರಲ್ಲಿ")
+						|| nounLinkedWord.endsWith("ನೇ")||nounLinkedWord.endsWith("ಳೇ")||nounLinkedWord.endsWith("ರೇ")) {
+					System.out.println("Matched meaning is ವ್ಯಕ್ತಿ  ಅಥವಾ ಪ್ರಾಣಿ ಅಥವಾ ವಸ್ತು ಅಥವಾ ಜಾಗ");
 				}
 				break;
 			} else if (nounWord.contains(polysemyWord)) {
-				if (nounWord.endsWith("ನು") || nounWord.endsWith("ನನ್ನು")
-						|| nounWord.endsWith("ನನ್ನ")
-						|| nounWord.endsWith("ನಿಂದ")
-						|| nounWord.endsWith("ನಿಗೆ") || nounWord.endsWith("ಗೆ")
-						|| nounWord.endsWith("ನ") || nounWord.endsWith("ನಲ್ಲಿ")
-						|| nounWord.endsWith("ನೇ")) {
-					System.out.println("Matched meaning is ವ್ಯಕ್ತಿಯ ಹೆಸರು");
+				if (nounWord.endsWith("ನು")||nounWord.endsWith("ಳು")||nounWord.endsWith("ರು")
+						|| nounWord.endsWith("ನನ್ನು")||nounWord.endsWith("ಳನ್ನು")||nounWord.endsWith("ರನ್ನು")
+						|| nounWord.endsWith("ನನ್ನ")||nounWord.endsWith("ಳನ್ನ")||nounWord.endsWith("ರನ್ನ")
+						|| nounWord.endsWith("ನಿಂದ")|| nounWord.endsWith("ಳಿಂದ")||nounWord.endsWith("ರಿಂದ")
+						|| nounWord.endsWith("ನಿಗೆ")||nounWord.endsWith("ಳಿಗೆ")||nounWord.endsWith("ರಿಗೆ")
+						|| nounWord.endsWith("ಗೆ")
+						|| nounWord.endsWith("ನ")||nounWord.endsWith("ಳ")||nounWord.endsWith("ರ")
+						|| nounWord.endsWith("ನಲ್ಲಿ")||nounWord.endsWith("ಳಲ್ಲಿ")||nounWord.endsWith("ರಲ್ಲಿ")
+						|| nounWord.endsWith("ನೇ")||nounWord.endsWith("ಳೇ")||nounWord.endsWith("ರೇ")) {
+					System.out.println("Matched meaning is ವ್ಯಕ್ತಿ  ಅಥವಾ ಪ್ರಾಣಿ ಅಥವಾ ವಸ್ತು ಅಥವಾ ಜಾಗ");
 				}
 				break;
 			}
