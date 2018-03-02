@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	 <script
+  src="jquery.js"></script>
+</head>
+<body>
+   
+<script>
+$(document).ready(function(){
+    var jsonObj = [];
+			 $.ajax({
+            url : './semantic.txt',
+			dataType: "text",
+			cache: false,
+			async: false,
+            success : function(text){
+        var jq = $(text);
+        var polysemyWord = $(text).find('div#amain1.amain table tbody tr td.label1 span span')[0].innerText;
+         console.log(polysemyWord);
+        var synsetCount = $(text).find('div#amain1.amain table tbody tr td.label1 span span')[1].innerText;
+         console.log(synsetCount);
+        
+        var posWord = $(text).find('div#amain1.amain table.abc tbody tr td.content table tbody tr td.content label#pos').text();
+         console.log(posWord);
+        var synWords = $(text).find('div#amain1.amain table.abc tbody tr td.content label#words a').text();
+         console.log(synWords);
+        var gloss = $(text).find('div#amain1.amain table.abc tbody tr td.content label#gloss').text();
+         console.log(gloss);
+		 var example = $(text).find('div#amain1.amain table.abc tbody tr td.content label#ex_stmt').text();
+         console.log(example);
+        var posWordArray = new Array();
+        var synWordsArray = new Array();
+        var glossArray = new Array();
+		var exampleArray = new Array();
+       /* var jsonObj = [];*/
+        var synsetWordCount = $(text).find('div#detail.detail').children('div');
+        $(synsetWordCount).each(function(i){
+            var item = {};
+            posWord = $(this).find('table.abc tbody tr td.content table tbody tr td.content label#pos').text();
+            posWord=$.trim(posWord);
+            console.log(posWord);
+            posWordArray.push(posWord);
+            item.posWord = posWord;
+            synWords = $(this).find('table.abc tbody tr td.content label#words a').text();
+            synWords=$.trim(synWords)
+            console.log(synWords);
+            item.synWords = synWords;
+            synWordsArray.push(synWords);
+            gloss = $(this).find('table.abc tbody tr td.content label#gloss').text();
+            gloss=$.trim(gloss);
+            console.log(gloss);
+            item.gloss = gloss;
+            glossArray.push(gloss);
+			example = $(this).find('table.abc tbody tr td.content label#ex_stmt').text();
+            example=$.trim(example);
+            console.log(example);
+            exampleArray.push(example);
+            item.example = example;
+            jsonObj.push(item);
+        });
+        console.log(jsonObj);
+
+        $.post("http://localhost:3000/send_save", {data:jsonObj}, function(result){
+            console.log("hello");
+        });
+        
+    }});
+
+   
+});
+
+</script>
+</body>
+</html>
