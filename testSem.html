@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	 <script
+  src="jquery.js"></script>
+</head>
+<body>
+   
+<script>
+
+  function callAjax(){
+    var jsonObj = [];
+    var semSet = [];
+    var flag = true;
+    var i=0;
+    while(flag){
+      var semObj = [];
+      i++;
+      $.ajax({
+        url : './semantic'+i+'.txt',
+        dataType: "text",
+        cache: false,
+        async: false,
+        success : function(text){
+            alert("success sematic"+i);
+            var jq = $(text);
+        var polysemyWord = $(text).find('div#amain1.amain table tbody tr td.label1 span span')[0].innerText;
+         //console.log(polysemyWord);
+        var synsetCount = $(text).find('div#amain1.amain table tbody tr td.label1 span span')[1].innerText;
+         console.log(synsetCount);
+        
+        var posWord = $(text).find('div#amain1.amain table.abc tbody tr td.content table tbody tr td.content label#pos').text();
+         //console.log(posWord);
+        var synWords = $(text).find('div#amain1.amain table.abc tbody tr td.content label#words a').text();
+        // console.log(synWords);
+        var gloss = $(text).find('div#amain1.amain table.abc tbody tr td.content label#gloss').text();
+        // console.log(gloss);
+		 var example = $(text).find('div#amain1.amain table.abc tbody tr td.content label#ex_stmt').text();
+         //console.log(example);
+        var posWordArray = new Array();
+        var synWordsArray = new Array();
+        var glossArray = new Array();
+		  var exampleArray = new Array();
+       /* var jsonObj = [];*/
+        var synsetWordCount = $(text).find('div#detail.detail').children('div');
+        $(synsetWordCount).each(function(i){
+            var item = {};
+            var msgItem = {};
+            posWord = $(this).find('table.abc tbody tr td.content table tbody tr td.content label#pos').text();
+            posWord=$.trim(posWord);
+            console.log(posWord);
+            posWordArray.push(posWord);
+            item.posWord = posWord;
+            msgItem.posWord = posWord;
+            synWords = $(this).find('table.abc tbody tr td.content label#words a').text();
+            synWords=$.trim(synWords)
+            console.log(synWords);
+            item.synWords = synWords;
+            synWordsArray.push(synWords);
+            gloss = $(this).find('table.abc tbody tr td.content label#gloss').text();
+            gloss=$.trim(gloss);
+            console.log(gloss);
+            item.gloss = gloss;
+            glossArray.push(gloss);
+			example = $(this).find('table.abc tbody tr td.content label#ex_stmt').text();
+            example=$.trim(example);
+            example=example.replace(/"/g, "");
+            example=example.replace(/\./g, "");
+            console.log(example);
+            exampleArray.push(example);
+            item.example = example;
+            msgItem.semantic = synWords+" "+gloss+" "+example;
+            console.log(msgItem);
+            semObj.push(msgItem);
+            jsonObj.push(item);
+        });
+        //console.log(jsonObj);
+        },
+        error : function(text){
+              alert("error sematic"+i);
+              flag = false;
+        }
+      });
+      console.log("Sem Object")
+      if(semObj.length!=0){
+      	semSet.push(semObj);
+      }
+      
+    }
+     console.log("Sem Set");
+    console.log(semSet);
+
+    //*********Semantic Analysis starts***************
+
+    $(semSet).each(function(setIndex, semanticArray){
+    	for(var i=0;i<semanticArray.length;i++){
+    		if(semanticArray[i].posWord=="noun"){
+	    		var semanticList1 = semanticArray[i].semantic;
+	    		for(var j=i+1;j<semanticArray.length;j++){
+	    			if(j<semanticArray.length){
+	    				var semanticList2 = semanticArray[j].semantic;
+	    				var semancticWordsArray1 = semanticList1.split(" ");
+	    				var semancticWordsArray2 = semanticList2.split(" ");
+	    				//to be continued
+
+	    			}
+	    		}
+	    	}
+    	}
+    	console.log("***************");
+    });
+
+  }
+  $(document).ready(function(){
+    callAjax();
+    
+  });
+
+</script>
+</body>
+</html>
