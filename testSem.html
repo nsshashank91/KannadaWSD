@@ -94,6 +94,7 @@
     //*********Semantic Analysis starts***************
 
     $(semSet).each(function(setIndex, semanticArray){
+    	var semanticBagCount = new Set();
     	for(var i=0;i<semanticArray.length;i++){
     		if(semanticArray[i].posWord=="noun"){
 	    		var semanticList1 = semanticArray[i].semantic;
@@ -103,12 +104,61 @@
 	    				var semancticWordsArray1 = semanticList1.split(" ");
 	    				var semancticWordsArray2 = semanticList2.split(" ");
 	    				//to be continued
-
+	    				for(var x=0;x<semancticWordsArray1.length;x++){
+	    					for(var y=0;y<semancticWordsArray2.length;y++){
+	    						var word1 = semancticWordsArray1[x];
+	    						var word2 = semancticWordsArray2[y];
+	    						if((word1!="ಯಾವುದೇ")&&(word1!="ಒಂದು")){
+	    							var length = 0;
+	    							if(word1.length<=word2.length){
+	    								length = word1.length;
+	    							}
+	    							else{
+	    								length = word2.length;
+	    							}
+	    							var wordMatchLength=0;
+	    							var z=0;
+	    							while(z<length){
+	    								if(word1.charAt(z)==word2.charAt(z)){
+	    									wordMatchLength++;
+	    									z++;
+	    								}
+	    								else{
+	    									break;
+	    								}
+	    							}
+	    							if(wordMatchLength>3){
+	    								console.log("Matching word is "+word1.substring(0,wordMatchLength));
+	    								console.log("Matching sentence is "+semanticArray[i].semantic);
+	    								console.log("Sentence = "+(i+1));
+	    								semanticBagCount.add(i+1);
+	    								break;
+	    							}
+	    						}
+	    					}
+	    				}
 	    			}
 	    		}
 	    	}
     	}
     	console.log("***************");
+    	var originalSemanticNetSize = semanticArray.length;
+    	var matchingSemanticNetSize = semanticBagCount.size;
+    	if(matchingSemanticNetSize+1==originalSemanticNetSize){
+    		console.log("All semantics are same. No polysemy word");
+    	}
+    	else{
+    		console.log("Polysemy word exists");
+    		var count=0;
+    		$(semanticBagCount).each(function(bagIndex, semanticBagValue){
+    			count++;
+    			var val = semanticBagValue;
+    			if(count!=val){
+    				console.log("Consider sentence "+count);
+    			}
+    		});
+
+    	}
     });
 
   }
