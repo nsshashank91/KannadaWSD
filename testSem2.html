@@ -91,24 +91,37 @@
     console.log(semSet);
 
     //*********Semantic Analysis starts***************
-
+    var nounVerbFlag = false;
+	 var jsonObj3 = [];
     $(semSet).each(function(setIndex, semanticArray){
         console.log("#######");
         console.log(semanticArray);
         var nounFlag = false;
         var verbFlag = false;
         $(semanticArray).each(function(semanticIndex, semanticObj){
-            if(semanticObj.posWord=='noun'){
+            if(semanticObj.posWord==="noun"){
                 nounFlag = true;
             }
-            else if(semanticObj.posWord=='verb'){
+            else if(semanticObj.posWord==="verb"){
                 verbFlag = true;
             }
         });
+		 console.log(semanticArray);
         var semanticBagCount = new Set();
         if(nounFlag==true&&verbFlag==true){
             console.log("*******Polysemy Word********");
-            return false;
+            nounVerbFlag = true;
+			 $(semanticArray).each(function(semanticIndex, semanticObj){
+				var item3 = {};
+				item3.posWord = semanticObj.posWord;
+				item3.targetWord = semanticObj.targetWord;
+                item3.semantic = semanticObj.semantic;
+				jsonObj3.push(item3);
+			});
+			console.log(nounVerbFlag);
+			console.log("json obj 3");
+			console.log(jsonObj3);
+			return;
         }
          else if(nounFlag==true&&verbFlag==false){
                 for(var i=0;i<semanticArray.length;i++){
@@ -200,6 +213,11 @@
                 });
             }
     });
+	if(nounVerbFlag){
+		 $.post("http://localhost:3000/send_save", {data:jsonObj3}, function(result){
+			console.log("noun verb");
+		 });
+	 }
   }
   $(document).ready(function(){
     callAjax();
