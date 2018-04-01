@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery.js"></script>
+</head>
+<body>
+<script>
+  function callAjax(){
+    var jsonObj = [];
+    var semSet = [];
+    var flag = true;
+    var nounVerbFlag = false;
+    var fileFlag = false;
+    var i=0;
+    while(flag){
+      var semObj = [];
+      i++;
+      $.ajax({
+        url : './semantic'+i+'.txt',
+        dataType: "text",
+        cache: false,
+        async: false,
+        success : function(text){
+            alert("success sematic"+i);
+            var jq = $(text);
+         var lookupWord = $(text).find('div#amain1.amain table tbody tr td.label1 span b span').text();
+        var posWord = $(text).find('div#amain1.amain table.abc tbody tr td.content table tbody tr td.content label#pos').text();
+         //console.log(posWord);
+        var synWords = $(text).find('div#amain1.amain table.abc tbody tr td.content label#words a').text();
+        // console.log(synWords);
+        var gloss = $(text).find('div#amain1.amain table.abc tbody tr td.content label#gloss').text();
+        // console.log(gloss);
+         var example = $(text).find('div#amain1.amain table.abc tbody tr td.content label#ex_stmt').text();
+         //console.log(example);
+        var posWordArray = new Array();
+        var synWordsArray = new Array();
+        var glossArray = new Array();
+          var exampleArray = new Array();
+       /* var jsonObj = [];*/
+        var synsetWordCount = $(text).find('div#detail.detail').children('div');
+        $(synsetWordCount).each(function(i){
+            var item = {};
+            var msgItem = {};
+            posWord = $(this).find('table.abc tbody tr td.content table tbody tr td.content label#pos').text();
+            posWord=$.trim(posWord);
+            console.log(posWord);
+            posWordArray.push(posWord);
+            item.posWord = posWord;
+            msgItem.posWord = posWord;
+            synWords = $(this).find('table.abc tbody tr td.content label#words a').text();
+            synWords=$.trim(synWords)
+            console.log(synWords);
+            item.synWords = synWords;
+            synWordsArray.push(synWords);
+            gloss = $(this).find('table.abc tbody tr td.content label#gloss').text();
+            gloss=$.trim(gloss);
+            console.log(gloss);
+            item.gloss = gloss;
+            glossArray.push(gloss);
+            example = $(this).find('table.abc tbody tr td.content label#ex_stmt').text();
+            example=$.trim(example);
+            example=example.replace(/"/g, "");
+            example=example.replace(/\./g, "");
+            console.log(example);
+            exampleArray.push(example);
+            item.example = example;
+            msgItem.targetWord = lookupWord;
+            var combo = synWords+" "+gloss+" "+example;
+            if(posWord=="noun"){
+                console.log("******************"+lookupWord);
+                combo=combo.replace(new RegExp(lookupWord, 'g'),"");
+                console.log("******************"+combo);
+            }
+            msgItem.semantic = combo;
+            console.log(msgItem);
+            semObj.push(msgItem);
+            jsonObj.push(item);
+        });
+        //console.log(jsonObj);
+        },
+        error : function(text){
+              alert("error sematic"+i);
+              flag = false;
+        }
+      });
+      console.log("Sem Object")
+      if(semObj.length!=0){
+        semSet.push(semObj);
+      }
+      
+    }
+     console.log("Sem Set");
+    console.log(semSet);
+
+    //*********Semantic Analysis starts***************
+	 var jsonObj3 = [];
+     console.log("*********Semantic Analysis starts***************");
+     $(semSet).each(function(setIndex, semanticArray){
+        console.log("#######");
+        console.log(semanticArray);
+        var nounFlag = false;
+        var verbFlag = false;
+        $(semanticArray).each(function(semanticIndex, semanticObj){
+            if(semanticObj.posWord==="noun"){
+                nounFlag = true;
+            }
+            else if(semanticObj.posWord==="verb"){
+                verbFlag = true;
+            }
+            if(nounFlag==true&&verbFlag==true){
+                console.log("*******Polysemy Word********");
+                nounVerbFlag = true;
+                 $(semanticArray).each(function(semanticIndex, semanticObj){
+                    var item3 = {};
+                    item3.posWord = semanticObj.posWord;
+                    item3.targetWord = semanticObj.targetWord;
+                    item3.semantic = semanticObj.semantic;
+                    jsonObj3.push(item3);
+                });
+                console.log(nounVerbFlag);
+                console.log("json obj 3");
+                console.log(jsonObj3);
+                if(nounVerbFlag&&!fileFlag){
+                     $.post("http://localhost:3000/send_save", {data:jsonObj3}, function(result){
+                        console.log("noun verb");
+                     });
+                     fileFlag = true;
+                }
+                return false;
+            }
+        });
+    });
+    $(semSet).each(function(setIndex, semanticArray){
+        console.log("#######");
+		 console.log(semanticArray);
+        var semanticBagCount = new Set();
+        // else if(nounFlag==true&&verbFlag==false){
+                for(var i=0;i<semanticArray.length;i++){
+                if(semanticArray[i].posWord==="noun"){
+                    var semanticList1 = semanticArray[i].semantic;
+                    for(var j=i+1;j<semanticArray.length;j++){
+                        if(j<semanticArray.length){
+                            var semanticList2 = semanticArray[j].semantic;
+                            var semancticWordsArray1 = semanticList1.split(" ");
+                            var semancticWordsArray2 = semanticList2.split(" ");
+                            //to be continued
+                            for(var x=0;x<semancticWordsArray1.length;x++){
+                                for(var y=0;y<semancticWordsArray2.length;y++){
+                                    var word1 = semancticWordsArray1[x];
+                                    var word2 = semancticWordsArray2[y];
+                                    if((word1!="ಯಾವುದೇ")&&(word1!="ಒಂದು")){//stopwords
+                                        var length = 0;
+                                        if(word1.length<=word2.length){
+                                            length = word1.length;
+                                        }
+                                        else{
+                                            length = word2.length;
+                                        }
+                                        var wordMatchLength=0;
+                                        var z=0;
+                                        while(z<length){
+                                            if(word1.charAt(z)==word2.charAt(z)){
+                                                wordMatchLength++;
+                                                z++;
+                                            }
+                                            else{
+                                                break;
+                                            }
+                                        }
+                                        if(wordMatchLength>3){
+                                            console.log("Matching word is "+word1.substring(0,wordMatchLength));
+                                            console.log("Matching sentence is "+semanticArray[i].semantic);
+                                            console.log("Sentence = "+(i));
+                                            semanticBagCount.add(i);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+         //}
+          nounFlag = false;
+          verbFlag = false;
+            console.log("***************");
+            var originalSemanticNetSize = semanticArray.length;
+            var matchingSemanticNetSize = semanticBagCount.size;
+            if(matchingSemanticNetSize+1==originalSemanticNetSize){
+                console.log("All semantics are same. No polysemy word");
+            }
+            else{
+                if(!fileFlag){
+                    console.log("*****");
+                    console.log(semanticBagCount);
+                    console.log(semanticBagCount.size);
+                    console.log("Polysemy word exists");
+                    var count=0;
+                    var jsonObj2 = [];
+                    $(semanticBagCount).each(function(bagIndex, semanticBagValue){
+                        var val = semanticBagValue;
+                        if(count!=val){
+                            var item2 = {};
+                            console.log("Consider sentence "+count);
+                            console.log(semanticArray[count].semantic);
+                            item2.targetWord = semanticArray[count].targetWord;
+                            item2.posWord = semanticArray[count].posWord;
+                            item2.semantic = semanticArray[count].semantic;
+                             if(item2.posWord==="noun"&&item2.posWord!="adjective"){
+                                jsonObj2.push(item2);
+                            }
+                            var nextCount = (count+1);
+                            console.log("Consider sentence "+nextCount);
+                            console.log(semanticArray[nextCount].semantic);
+                            item2 = {};
+                            item2.targetWord = semanticArray[count].targetWord;
+                            item2.posWord = semanticArray[nextCount].posWord;
+                            item2.semantic = semanticArray[nextCount].semantic;
+                            if(item2.posWord==="noun"&&item2.posWord!="adjective"){
+                                jsonObj2.push(item2);
+                            }
+                        }
+                        count++;
+                    });
+                    if(jsonObj2.length>1){
+                        console.log(jsonObj2);
+                        $.post("http://localhost:3000/send_save", {data:jsonObj2}, function(result){
+                            console.log("hello");
+                        });
+                        fileFlag = true;
+                    }
+                }
+            }
+    });
+	
+  }
+  $(document).ready(function(){
+    callAjax();
+  });
+</script>
+</body>
+</html>
