@@ -17,7 +17,7 @@ $(document).ready(function(){
 			async: false,
             success : function(text){
         var jq = $(text);
-        var polysemyWord = $(text).find('div#amain1.amain table tbody tr td.label1 span span')[0].innerText;
+        var polysemyWord = $(text).find('div#amain1.amain table tbody tr td.label1 span b span')[0].innerText;
          console.log(polysemyWord);
         var synsetCount = $(text).find('div#amain1.amain table tbody tr td.label1 span span')[1].innerText;
          console.log(synsetCount);
@@ -68,6 +68,7 @@ $(document).ready(function(){
         
     }});
 
+    window.history.back()
    
 });
 

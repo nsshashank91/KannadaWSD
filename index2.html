@@ -58,8 +58,8 @@
 	<div class="container">
 		<div class="row">
 			<button id="preprocess_button" class="btn btn-danger">Preprocess</button>
-			<button id="semantics_button" class="btn btn-danger">Obtain Semantics</button>
-			<a class="btn btn-success" href="http://localhost:9080/kannada/disambiguate">Disambiguate</a>
+			<a class="btn btn-danger" href="http://localhost:8080/rawTextParser.html">Obtain Semantics</a>
+			<button id="disambiguate_button" class="btn btn-success">Disambiguate</button>
 		</div>
 	</div>
 
@@ -79,6 +79,9 @@
 					jsonpCallback: "callbackToken",
 		            success: function(data){
 		            	alert("success");
+		            	console.log(JSON.stringify(data));
+		            	alert(data.msg);
+		            	console.log(data.msg);
 		            },
 		            error: function(text){
 		            	alert("error");
@@ -95,6 +98,7 @@
 					dataType: "text",
 					cache: false,
 					async: false,
+					type: 'GET',
 		            success : function(text){
 		            	alert("success");
 		            },
@@ -102,6 +106,31 @@
 		            	alert("error");
 		            }
 		        });
+		    });
+
+		    $("#disambiguate_button").click(function(){
+		        alert("The disambiguate was clicked");
+		         $.ajax({
+		            url : 'http://localhost:9080/kannada/disambiguate',
+		            dataType: 'jsonp',
+					cache: false,
+					async: false,
+					type: 'GET',
+					contentType: 'application/json; charset=utf-8',
+					jsonp: false,
+					jsonpCallback: "callbackToken",
+		            success: function(data){
+		            	alert("success");
+		            	console.log(JSON.stringify(data));
+		            	alert(data.msg);
+		            	console.log(data.msg);
+		            },
+		            error: function(text){
+		            	alert("error");
+		            	console.log(JSON.stringify(text));
+		            }
+		        });
+
 		    });
 		});
 	</script>
