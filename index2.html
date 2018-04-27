@@ -27,6 +27,13 @@
 		</div>
 	</div>
 
+	<div class="container">
+		<div class="row">
+			<div id="LoadingImage" style="display: none">
+			  <img src="loading.gif" />
+			</div>
+		</div>
+	</div>
 
 	<div class="container">
 		<div class="row">
@@ -68,17 +75,23 @@
 		$(document).ready(function(){
 			$("form#kannada").submit(function(e){
 				e.preventDefault(); 
-				alert("form submitted");
+				$("#LoadingImage").show();
 				var formData = new FormData(this);
 				 $.ajax({
-			        url: "http://localhost:9080/kannada/uploadFile",
+			        url: 'http://localhost:9080/kannada/uploadFile',
 			        type: 'POST',
 			        data: formData,
-			        cache: false,
-			        async: false,
-			        contentType: false,
-			        processData: false
+			        cache : false, 
+			    	processData: false,
+					contentType: false,
+		            success: function(text){
+		            	$("#LoadingImage").hide();
+		            },
+		            error: function(xhr,status){
+		            	$("#LoadingImage").hide();
+		            }
 			    });
+				 alert("File Uploaded");
 			});
 
 			$("#preprocess_button").click(function(){
