@@ -45,12 +45,12 @@
 
 	<div class="container">
 		<div class="row">
-			<form>
+			<form method="POST" action="http://localhost:9080/kannada/uploadFile" enctype="multipart/form-data" accept-charset="UTF-8">
 			  <div class="form-group">
 			    <label for="file1">File</label>
-    			<input type="file" class="form-control-file" id="file1">
+    			<input type="file" class="form-control-file" id="file1" name="file1">
 			  </div>
-  				<button type="submit" class="btn btn-info">Upload File</button>
+  				<button type="submit" class="btn btn-info" onsubmit="this.form.reset()">Upload File</button>
 			</form>
 		</div>
 	</div>
