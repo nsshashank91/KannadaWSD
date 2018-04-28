@@ -27,13 +27,11 @@
 		</div>
 	</div>
 
-	<div class="container">
-		<div class="row">
-			<div id="LoadingImage" style="display: none">
+			<div id="LoadingImage" style="display: none; position:fixed; z-index: 100; margin-left:600px">
 			  <img src="loading.gif" />
 			</div>
-		</div>
-	</div>
+	
+	
 
 	<div class="container">
 		<div class="row">
@@ -70,6 +68,18 @@
 		</div>
 	</div>
 
+	<br/>
+	<div class="container">
+		<div class="row">
+			<div id="input_sentence">input</div>
+		</div>
+		<div class="row">
+			<div id="polysemy_word">polysemy</div>
+		</div>
+		<div class="row">
+			<div id="meaning">meaning</div>
+		</div>
+	</div>
 	<script>
 
 		$(document).ready(function(){
@@ -96,6 +106,7 @@
 
 			$("#preprocess_button").click(function(){
 		        alert("The pre process was clicked");
+		        $("#LoadingImage").show();
 		         $.ajax({
 		            url : 'http://localhost:9080/kannada/preprocess',
 		            dataType: 'jsonp',
@@ -110,10 +121,12 @@
 		            	console.log(JSON.stringify(data));
 		            	alert(data.msg);
 		            	console.log(data.msg);
+		            	$("#LoadingImage").hide();
 		            },
 		            error: function(text){
 		            	alert("error");
 		            	console.log(JSON.stringify(text));
+		            	$("#LoadingImage").hide();
 		            }
 		        });
 
@@ -138,6 +151,7 @@
 
 		    $("#disambiguate_button").click(function(){
 		        alert("The disambiguate was clicked");
+		        $("#LoadingImage").show();
 		         $.ajax({
 		            url : 'http://localhost:9080/kannada/disambiguate',
 		            dataType: 'jsonp',
@@ -152,10 +166,15 @@
 		            	console.log(JSON.stringify(data));
 		            	alert(data.msg);
 		            	console.log(data.msg);
+		            	$("#meaning").html(data.msg);
+		            	$("#meaning").append("<br/>");
+		            	$("#meaning").append(data.msg);
+		            	$("#LoadingImage").hide();
 		            },
 		            error: function(text){
 		            	alert("error");
 		            	console.log(JSON.stringify(text));
+		            	$("#LoadingImage").hide();
 		            }
 		        });
 		         $("form#kannada")[0].reset();
