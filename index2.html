@@ -71,13 +71,13 @@
 	<br/>
 	<div class="container">
 		<div class="row">
-			<div id="input_sentence">input</div>
+			<div id="input_sentence"></div>
 		</div>
 		<div class="row">
-			<div id="polysemy_word">polysemy</div>
+			<div id="polysemy_word"></div>
 		</div>
 		<div class="row">
-			<div id="meaning">meaning</div>
+			<div id="meaning"></div>
 		</div>
 	</div>
 	<script>
@@ -85,6 +85,9 @@
 		$(document).ready(function(){
 			$("form#kannada").submit(function(e){
 				e.preventDefault(); 
+				$("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
 				$("#LoadingImage").show();
 				var formData = new FormData(this);
 				 $.ajax({
@@ -107,6 +110,9 @@
 			$("#preprocess_button").click(function(){
 		        alert("The pre process was clicked");
 		        $("#LoadingImage").show();
+		        $("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
 		         $.ajax({
 		            url : 'http://localhost:9080/kannada/preprocess',
 		            dataType: 'jsonp',
@@ -134,6 +140,9 @@
 
 		    $("#semantics_button").click(function(){
 		        alert("The semantics was clicked");
+		        $("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
 		        $.ajax({
 		            url : 'http://localhost:8080/rawTextParser.html',
 					dataType: "text",
@@ -166,10 +175,12 @@
 		            	console.log(JSON.stringify(data));
 		            	alert(data.msg);
 		            	console.log(data.msg);
-		            	$("#meaning").html(data.msg);
-		            	$("#meaning").append("<br/>");
-		            	$("#meaning").append(data.msg);
+		            	console.log(data.result);
+		            	$("#input_sentence").html(data.result.input);
+		            	$("#polysemy_word").html(data.result.polysemy);
+		            	$("#meaning").html(data.result.sense);
 		            	$("#LoadingImage").hide();
+
 		            },
 		            error: function(text){
 		            	alert("error");
