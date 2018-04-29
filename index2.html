@@ -40,8 +40,8 @@
 				<li class="active">
 				 	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Disambiguator <span class="caret"></span></a>
 				 	<ul class="dropdown-menu">
-				 		<li class="active"><a href="#">Single Polysemy Occurrence</a></li>
-				 		<li><a href="index3.html">Double Polysemy Occurrence</a></li>
+				 		<li class="active"><a href="#">Double Polysemy Occurrence</a></li>
+				 		<li><a href="index3.html">Single Polysemy Occurrence</a></li>
 				 	</ul>
 				 </li>
 			</ul>
@@ -176,11 +176,11 @@
 		            	alert(data.msg);
 		            	console.log(data.msg);
 		            	console.log(data.result);
-		            	$("#input_sentence").html(data.result.input);
-		            	$("#polysemy_word").html(data.result.polysemy);
+		            	$("#input_sentence").html("<b>Input sentence is</b> "+data.result.input);
+		            	$("#polysemy_word").html("<b>Polysemy Word is</b> "+data.result.polysemy);
 		            	var senses = data.result.sense;
 						$.each(senses, function(key,value) {
-						  $("#meaning").append("Matched meaning is "+value+"<br/>");
+						  $("#meaning").append("<b>"+(key+1)+" instance Matched semantic is</b> "+value+"<br/>");
 						}); 
 		            	$("#LoadingImage").hide();
 
