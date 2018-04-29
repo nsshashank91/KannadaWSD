@@ -178,7 +178,10 @@
 		            	console.log(data.result);
 		            	$("#input_sentence").html(data.result.input);
 		            	$("#polysemy_word").html(data.result.polysemy);
-		            	$("#meaning").html(data.result.sense);
+		            	var senses = data.result.sense;
+						$.each(senses, function(key,value) {
+						  $("#meaning").append("Matched meaning is "+value+"<br/>");
+						}); 
 		            	$("#LoadingImage").hide();
 
 		            },
