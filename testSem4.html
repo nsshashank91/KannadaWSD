@@ -24,7 +24,7 @@
             alert("success sematic"+i);
             var jq = $(text);
          //var lookupWord = $(text).find('div#amain1.amain table tbody tr td.label1 span b span').text();
-         var lookupWord = $(text).find('div#amain1.amain table tbody tr td.label1 span span').text();
+         var lookupWord = $(text).find('div#amain1.amain table tbody tr td.label1 span b span').text();
          lookupWord = lookupWord.replace(/[0-9]/g, "");
         var posWord = $(text).find('div#amain1.amain table.abc tbody tr td.content table tbody tr td.content label#pos').text();
          //console.log(posWord);
@@ -123,7 +123,7 @@
                 console.log("json obj 3");
                 console.log(jsonObj3);
                 if(nounVerbFlag&&!fileFlag){
-                     $.post("http://localhost:3000/send_save", {data:jsonObj3}, function(result){
+                     $.post("http://localhost:3001/send_save", {data:jsonObj3}, function(result){
                         console.log("noun verb");
                      });
                      fileFlag = true;
@@ -227,7 +227,7 @@
                     });
                     if(jsonObj2.length>1){
                         console.log(jsonObj2);
-                        $.post("http://localhost:3000/send_save", {data:jsonObj2}, function(result){
+                        $.post("http://localhost:3001/send_save", {data:jsonObj2}, function(result){
                             console.log("hello");
                         });
                         fileFlag = true;

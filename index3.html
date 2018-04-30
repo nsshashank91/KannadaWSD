@@ -26,6 +26,10 @@
 		</div>
 	</div>
 
+	<div id="LoadingImage" style="display: none; position:fixed; z-index: 100; margin-left:600px">
+	  <img src="loading.gif" />
+	</div>
+
 	<div class="container">
 		<div class="row">
 			<ul class="nav nav-pills">
@@ -43,14 +47,147 @@
 
 	<div class="container">
 		<div class="row">
-			<form>
+			<form id="kannada" method="POST" enctype="multipart/form-data">
 			  <div class="form-group">
-			    <label for="file2">File</label>
-    			<input type="file" class="form-control-file" id="file2">
+			    <label for="file1">File</label>
+    			<input type="file" class="form-control-file" id="file1" name="file1">
 			  </div>
-  				<button type="submit" class="btn btn-primary">Upload File</button>
+			  <button type="submit" id="file_submit" class="btn btn-info">Upload File</button>
 			</form>
 		</div>
 	</div>
+	<br/>
+	<div class="container">
+		<div class="row">
+			<button id="preprocess_button" class="btn btn-danger">Preprocess</button>
+			<a class="btn btn-danger" href="http://localhost:8080/rawTextParser.html">Obtain Semantics</a>
+			<button id="disambiguate_button" class="btn btn-success">Disambiguate</button>
+		</div>
+	</div>
+
+	<br/>
+	<div class="container">
+		<div class="row">
+			<div id="input_sentence"></div>
+		</div>
+		<div class="row">
+			<div id="polysemy_word"></div>
+		</div>
+		<div class="row">
+			<div id="meaning"></div>
+		</div>
+	</div>
+	<script>
+
+		$(document).ready(function(){
+			$("form#kannada").submit(function(e){
+				e.preventDefault(); 
+				$("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
+				$("#LoadingImage").show();
+				var formData = new FormData(this);
+				 $.ajax({
+			        url: 'http://localhost:9080/kannada/uploadFile',
+			        type: 'POST',
+			        data: formData,
+			        cache : false, 
+			    	processData: false,
+					contentType: false,
+		            success: function(text){
+		            	$("#LoadingImage").hide();
+		            },
+		            error: function(xhr,status){
+		            	$("#LoadingImage").hide();
+		            }
+			    });
+				 alert("File Uploaded");
+			});
+
+			$("#preprocess_button").click(function(){
+		        alert("The pre process was clicked");
+		        $("#LoadingImage").show();
+		        $("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
+		         $.ajax({
+		            url : 'http://localhost:9080/kannada2/preprocess',
+		            dataType: 'jsonp',
+					cache: false,
+					async: false,
+					type: 'GET',
+					contentType: 'application/json; charset=utf-8',
+					jsonp: false,
+					jsonpCallback: "callbackToken",
+		            success: function(data){
+		            	alert("success");
+		            	$("#LoadingImage").hide();
+		            },
+		            error: function(text){
+		            	alert("error");
+		            	$("#LoadingImage").hide();
+		            }
+		        });
+
+		    });
+
+		    $("#semantics_button").click(function(){
+		        alert("The semantics was clicked");
+		        $("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
+		        $.ajax({
+		            url : 'http://localhost:8080/rawTextParser.html',
+					dataType: "text",
+					cache: false,
+					async: false,
+					type: 'GET',
+		            success : function(text){
+		            	alert("success");
+		            },
+		            error: function(text){
+		            	alert("error");
+		            }
+		        });
+		    });
+
+		    $("#disambiguate_button").click(function(){
+		        alert("The disambiguate was clicked");
+		        $("#LoadingImage").show();
+		         $.ajax({
+		            url : 'http://localhost:9080/kannada/disambiguate',
+		            dataType: 'jsonp',
+					cache: false,
+					async: false,
+					type: 'GET',
+					contentType: 'application/json; charset=utf-8',
+					jsonp: false,
+					jsonpCallback: "callbackToken",
+		            success: function(data){
+		            	alert("success");
+		            	console.log(JSON.stringify(data));
+		            	alert(data.msg);
+		            	console.log(data.msg);
+		            	console.log(data.result);
+		            	$("#input_sentence").html("<b>Input sentence is</b> "+data.result.input);
+		            	$("#polysemy_word").html("<b>Polysemy Word is</b> "+data.result.polysemy);
+		            	var senses = data.result.sense;
+						$.each(senses, function(key,value) {
+						  $("#meaning").append("<b>"+(key+1)+" instance Matched semantic is</b> "+value+"<br/>");
+						}); 
+		            	$("#LoadingImage").hide();
+
+		            },
+		            error: function(text){
+		            	alert("error");
+		            	console.log(JSON.stringify(text));
+		            	$("#LoadingImage").hide();
+		            }
+		        });
+		         $("form#kannada")[0].reset();
+		    });
+		});
+	</script>
+
 </body>
 </html>
