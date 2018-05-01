@@ -60,7 +60,8 @@
 	<div class="container">
 		<div class="row">
 			<button id="preprocess_button" class="btn btn-danger">Preprocess</button>
-			<a class="btn btn-danger" href="http://localhost:8080/rawTextParser.html">Obtain Semantics</a>
+			<a class="btn btn-danger" href="http://localhost:8080/testSem4.html">Parse Semantics</a>
+			<button id="semantics_button" class="btn btn-danger">Obtain Semantics</button>
 			<button id="disambiguate_button" class="btn btn-success">Disambiguate</button>
 		</div>
 	</div>
@@ -137,16 +138,21 @@
 		        $("#polysemy_word").html("");
 		        $("#meaning").html("");
 		        $.ajax({
-		            url : 'http://localhost:8080/rawTextParser.html',
-					dataType: "text",
+		             url : 'http://localhost:9080/kannada2/semantics',
+		            dataType: 'jsonp',
 					cache: false,
 					async: false,
 					type: 'GET',
-		            success : function(text){
+					contentType: 'application/json; charset=utf-8',
+					jsonp: false,
+					jsonpCallback: "callbackToken",
+		            success: function(data){
 		            	alert("success");
+		            	$("#LoadingImage").hide();
 		            },
 		            error: function(text){
 		            	alert("error");
+		            	$("#LoadingImage").hide();
 		            }
 		        });
 		    });
@@ -155,7 +161,7 @@
 		        alert("The disambiguate was clicked");
 		        $("#LoadingImage").show();
 		         $.ajax({
-		            url : 'http://localhost:9080/kannada/disambiguate',
+		            url : 'http://localhost:9080/kannada2/disambiguate',
 		            dataType: 'jsonp',
 					cache: false,
 					async: false,
