@@ -77,9 +77,8 @@
 		<div class="row">
 			<div id="meaning"></div>
 		</div>
-	</div>
+	</div/>
 	<script>
-
 		$(document).ready(function(){
 			$("form#kannada").submit(function(e){
 				e.preventDefault(); 
@@ -171,22 +170,15 @@
 					jsonpCallback: "callbackToken",
 		            success: function(data){
 		            	alert("success");
-		            	console.log(JSON.stringify(data));
-		            	alert(data.msg);
-		            	console.log(data.msg);
-		            	console.log(data.result);
-		            	$("#input_sentence").html("<b>Input sentence is</b> "+data.result.input);
-		            	$("#polysemy_word").html("<b>Polysemy Word is</b> "+data.result.polysemy);
-		            	var senses = data.result.sense;
-						$.each(senses, function(key,value) {
-						  $("#meaning").append("<b>"+(key+1)+" instance Matched semantic is</b> "+value+"<br/>");
-						}); 
+		            	$("#input_sentence").html("<b>Input sentence is</b> "+data.input);
+		            	$("#polysemy_word").html("<b>Polysemy Word is</b> "+data.polysemy);
+		            	$("#meaning").html("<b>Matched Meaning is</b> "+data.sense);
 		            	$("#LoadingImage").hide();
 
 		            },
 		            error: function(text){
 		            	alert("error");
-		            	console.log(JSON.stringify(text));
+		            	//console.log(JSON.stringify(text));
 		            	$("#LoadingImage").hide();
 		            }
 		        });
