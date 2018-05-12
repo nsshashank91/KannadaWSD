@@ -64,7 +64,7 @@
 	<div class="container">
 		<div class="row">
 			<button id="preprocess_button" class="btn btn-danger">Preprocess</button>
-			<a class="btn btn-danger" href="http://localhost:8080/rawTextParser.html">Obtain Semantics</a>
+			<a id="semantics_button" class="btn btn-danger" href="http://localhost:8080/rawTextParser.html">Obtain Semantics</a>
 			<button id="disambiguate_button" class="btn btn-success">Disambiguate</button>
 		</div>
 	</div>
@@ -105,12 +105,16 @@
 					contentType: false,
 		            success: function(text){
 		            	$("#LoadingImage").hide();
+		            	  	 
 		            },
 		            error: function(xhr,status){
 		            	$("#LoadingImage").hide();
 		            }
 			    });
 				 alert("File Uploaded");
+				 $("#preprocess_button").attr('disabled',false);
+		         $("#semantics_button").attr('disabled',true);
+				 $("#disambiguate_button").attr('disabled',true);
 			});
 
 			$("#preprocess_button").click(function(){
@@ -119,6 +123,7 @@
 		        $("#input_sentence").html("");
 		        $("#polysemy_word").html("");
 		        $("#meaning").html("");
+		      
 		         $.ajax({
 		            url : 'http://localhost:9080/kannada/preprocess',
 		            dataType: 'jsonp',
@@ -129,11 +134,12 @@
 					jsonp: false,
 					jsonpCallback: "callbackToken",
 		            success: function(data){
-		
 		            	console.log(JSON.stringify(data));
 		            	alert(data.msg);
 		            	console.log(data.msg);
 		            	$("#LoadingImage").hide();
+		          		 $("#semantics_button").removeAttr('disabled');
+		          
 		            },
 		            error: function(text){
 		            	alert("error");
@@ -142,13 +148,14 @@
 		            }
 		        });
 
+
 		    });
 
 		    $("#semantics_button").click(function(){
-		        
 		        $("#input_sentence").html("");
 		        $("#polysemy_word").html("");
 		        $("#meaning").html("");
+		        
 		        $.ajax({
 		            url : 'http://localhost:8080/rawTextParser.html',
 					dataType: "text",
@@ -162,10 +169,10 @@
 		            	alert("error");
 		            }
 		        });
+		      
 		    });
 
 		    $("#disambiguate_button").click(function(){
-		        
 		        $("#LoadingImage").show();
 		         $.ajax({
 		            url : 'http://localhost:9080/kannada/disambiguate',
@@ -190,7 +197,9 @@
 						  $("#meaning").append("<b>"+(key+1)+" instance Matched semantic is</b><p> "+value+"</p>");
 						}); 
 		            	$("#LoadingImage").hide();
-
+		            	$("#preprocess_button").attr('disabled',true);
+		            	$("#semantics_button").attr('disabled',true);
+				 		$("#disambiguate_button").attr('disabled',true);
 		            },
 		            error: function(text){
 		            	alert("error");

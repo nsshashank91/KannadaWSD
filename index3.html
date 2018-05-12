@@ -60,7 +60,7 @@
 	<div class="container">
 		<div class="row">
 			<button id="preprocess_button" class="btn btn-danger">Preprocess</button>
-			<a class="btn btn-danger" href="http://localhost:8080/testSem4.html">Parse Semantics</a>
+			<a id="parse_button" class="btn btn-danger" href="http://localhost:8080/testSem4.html">Parse Semantics</a>
 			<button id="semantics_button" class="btn btn-danger">Obtain Semantics</button>
 			<button id="disambiguate_button" class="btn btn-success">Disambiguate</button>
 		</div>
@@ -110,6 +110,11 @@
 		            }
 			    });
 				 alert("File Uploaded");
+				 $("#preprocess_button").attr('disabled',false);
+				 $("#parse_button").attr('disabled',true);
+		         $("#semantics_button").attr('disabled',true);
+				 $("#disambiguate_button").attr('disabled',true);
+
 			});
 
 			$("#preprocess_button").click(function(){
@@ -129,6 +134,10 @@
 		            success: function(data){
 		            	alert("success");
 		            	$("#LoadingImage").hide();
+		            	$("#preprocess_button").attr('disabled',true);
+				 		$("#parse_button").attr('disabled',false);
+		         		$("#semantics_button").attr('disabled',true);
+				 		$("#disambiguate_button").attr('disabled',true);
 		            },
 		            error: function(text){
 		            	alert("error");
@@ -155,6 +164,11 @@
 		            success: function(data){
 		            	alert("success");
 		            	$("#LoadingImage").hide();
+		            	$("#preprocess_button").attr('disabled',true);
+				 		$("#parse_button").attr('disabled',true);
+		         		$("#semantics_button").attr('disabled',true);
+				 		$("#disambiguate_button").attr('disabled',false);
+
 		            },
 		            error: function(text){
 		            	alert("error");
@@ -181,6 +195,10 @@
 		            	$("#polysemy_word").html("<b>Polysemy Word is</b><p> "+data.polysemy+"</p>");
 		            	$("#meaning").html("<b>Matched Meaning is</b><p> "+data.sense+"</p>");
 		            	$("#LoadingImage").hide();
+		            	$("#preprocess_button").attr('disabled',true);
+				 		$("#parse_button").attr('disabled',true);
+		         		$("#semantics_button").attr('disabled',true);
+				 		$("#disambiguate_button").attr('disabled',true);
 
 		            },
 		            error: function(text){
