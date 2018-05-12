@@ -8,8 +8,6 @@
 
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-
 </head>
 
 <body>
@@ -29,20 +27,18 @@
 	</div>
 
 	<div id="LoadingImage" style="display: none; position:fixed; z-index: 100; margin-left:600px">
-			  <img src="loading.gif" />
+	  <img src="loading.gif" />
 	</div>
-	
-	
 
 	<div class="container">
 		<div class="row">
 			<ul class="nav nav-pills">
   				<li><a href="index.html">Home</a></li>
-				<li class="active">
+				 <li class="active">
 				 	<a href="#" class="dropdown-toggle" data-toggle="dropdown">Disambiguator <span class="caret"></span></a>
 				 	<ul class="dropdown-menu">
-				 		<li class="active"><a href="#">Double Polysemy Occurrence</a></li>
-				 		<li><a href="index3.html">Single Polysemy Occurrence</a></li>
+				 		<li><a href="index2.html">Double Polysemy Occurrence</a></li>
+				 		<li class="active"><a href="#">Single Polysemy Occurrence</a></li>
 				 	</ul>
 				 </li>
 			</ul>
@@ -63,8 +59,9 @@
 	<br/>
 	<div class="container">
 		<div class="row">
-			<button id="preprocess_button" class="btn btn-danger">Preprocess</button>
-			<a id="semantics_button" class="btn btn-danger" href="http://localhost:8080/rawTextParser.html">Obtain Semantics</a>
+			<button id="preprocess_button" class="btn btn-danger" disabled="disabled">Preprocess</button>
+			<a id="parse_button" class="btn btn-danger" href="http://localhost:8080/testSem4.html" disabled="disabled">Parse Semantics</a>
+			<button id="semantics_button" class="btn btn-danger" disabled="disabled">Obtain Semantics</button>
 			<button id="disambiguate_button" class="btn btn-success">Disambiguate</button>
 		</div>
 	</div>
@@ -81,13 +78,15 @@
 			<div id="meaning"></div>
 		</div>
 	</div>
-	<div class="footer-copyright"
+
+	<div id="wsd_footer">
+		<div class="footer-copyright"
 		style="color:blue; position: fixed; 
 		margin-left: 400px; margin-top:220px">
 	        © 2018 Copyright: Ramaiah Institute of Technology, Department of Computer Science Engineering
 	 </div>
+	</div>
 	<script>
-
 		$(document).ready(function(){
 			$("form#kannada").submit(function(e){
 				e.preventDefault(); 
@@ -105,7 +104,6 @@
 					contentType: false,
 		            success: function(text){
 		            	$("#LoadingImage").hide();
-		            	  	 
 		            },
 		            error: function(xhr,status){
 		            	$("#LoadingImage").hide();
@@ -113,69 +111,19 @@
 			    });
 				 alert("File Uploaded");
 				 $("#preprocess_button").attr('disabled',false);
+				 $("#parse_button").attr('disabled',true);
 		         $("#semantics_button").attr('disabled',true);
 				 $("#disambiguate_button").attr('disabled',true);
+
 			});
 
 			$("#preprocess_button").click(function(){
-		       
 		        $("#LoadingImage").show();
 		        $("#input_sentence").html("");
 		        $("#polysemy_word").html("");
 		        $("#meaning").html("");
-		      
 		         $.ajax({
-		            url : 'http://localhost:9080/kannada/preprocess',
-		            dataType: 'jsonp',
-					cache: false,
-					async: false,
-					type: 'GET',
-					contentType: 'application/json; charset=utf-8',
-					jsonp: false,
-					jsonpCallback: "callbackToken",
-		            success: function(data){
-		            	console.log(JSON.stringify(data));
-		            	alert(data.msg);
-		            	console.log(data.msg);
-		            	$("#LoadingImage").hide();
-		            	$("#preprocess_button").attr('disabled',true);
-		          		$("#semantics_button").attr('disabled',false);
-		            },
-		            error: function(text){
-		            	alert("error");
-		            	console.log(JSON.stringify(text));
-		            	$("#LoadingImage").hide();
-		            }
-		        });
-
-
-		    });
-
-		    $("#semantics_button").click(function(){
-		        $("#input_sentence").html("");
-		        $("#polysemy_word").html("");
-		        $("#meaning").html("");
-		        $.ajax({
-		            url : 'http://localhost:8080/rawTextParser.html',
-					dataType: "text",
-					cache: false,
-					async: false,
-					type: 'GET',
-		            success : function(text){
-		            	alert("success");
-		            },
-		            error: function(text){
-		            	alert("error");
-		            }
-		        });
-		        window.location.assign("http://localhost:8080/index23.html")
-
-		    });
-
-		    $("#disambiguate_button").click(function(){
-		        $("#LoadingImage").show();
-		         $.ajax({
-		            url : 'http://localhost:9080/kannada/disambiguate',
+		            url : 'http://localhost:9080/kannada2/preprocess',
 		            dataType: 'jsonp',
 					cache: false,
 					async: false,
@@ -185,29 +133,83 @@
 					jsonpCallback: "callbackToken",
 		            success: function(data){
 		            	alert("success");
-		            	console.log(JSON.stringify(data));
-		            	
-		            	console.log(data.msg);
-		            	console.log(data.result);
-		            	$("#input_sentence").html("<b>Input sentence is</b><p> "+data.result.input+"</p>");
-		            	$("#polysemy_word").html("<b>Polysemy Word is</b><p> "+data.result.polysemy+
-		            		"</p>");
-		            	var senses = data.result.sense;
-						$.each(senses, function(key,value) {
-						  $("#meaning").append("<b>"+(key+1)+" instance Matched semantic is</b><p> "+value+"</p>");
-						}); 
 		            	$("#LoadingImage").hide();
 		            	$("#preprocess_button").attr('disabled',true);
-		            	$("#semantics_button").attr('disabled',true);
+				 		$("#parse_button").attr('disabled',false);
+		         		$("#semantics_button").attr('disabled',true);
 				 		$("#disambiguate_button").attr('disabled',true);
 		            },
 		            error: function(text){
 		            	alert("error");
-		            	console.log(JSON.stringify(text));
+		            	$("#LoadingImage").hide();
+		            }
+		        });
+
+		    });
+
+		    $("#semantics_button").click(function(){
+		 		
+		        $("#input_sentence").html("");
+		        $("#polysemy_word").html("");
+		        $("#meaning").html("");
+		        $.ajax({
+		             url : 'http://localhost:9080/kannada2/semantics',
+		            dataType: 'jsonp',
+					cache: false,
+					async: false,
+					type: 'GET',
+					contentType: 'application/json; charset=utf-8',
+					jsonp: false,
+					jsonpCallback: "callbackToken",
+		            success: function(data){
+		            	alert("success");
+		            	$("#LoadingImage").hide();
+		            	$("#preprocess_button").attr('disabled',true);
+				 		$("#parse_button").attr('disabled',true);
+		         		$("#semantics_button").attr('disabled',true);
+				 		$("#disambiguate_button").attr('disabled',false);
+
+		            },
+		            error: function(text){
+		            	alert("error");
+		            	$("#LoadingImage").hide();
+		            }
+		        });
+		        
+		    });
+
+		    $("#disambiguate_button").click(function(){
+		        
+		        $("#LoadingImage").show();
+		         $.ajax({
+		            url : 'http://localhost:9080/kannada2/disambiguate',
+		            dataType: 'jsonp',
+					cache: false,
+					async: false,
+					type: 'GET',
+					contentType: 'application/json; charset=utf-8',
+					jsonp: false,
+					jsonpCallback: "callbackToken",
+		            success: function(data){
+		            	alert("success");
+		            	$("#input_sentence").html("<b>Input sentence is</b><p> "+data.input+"</p>");
+		            	$("#polysemy_word").html("<b>Polysemy Word is</b><p> "+data.polysemy+"</p>");
+		            	$("#meaning").html("<b>Matched Meaning is</b><p> "+data.sense+"</p>");
+		            	$("#LoadingImage").hide();
+		            	$("#preprocess_button").attr('disabled',true);
+				 		$("#parse_button").attr('disabled',true);
+		         		$("#semantics_button").attr('disabled',true);
+				 		$("#disambiguate_button").attr('disabled',true);
+
+		            },
+		            error: function(text){
+		            	alert("error");
+		            	//console.log(JSON.stringify(text));
 		            	$("#LoadingImage").hide();
 		            }
 		        });
 		         $("form#kannada")[0].reset();
+
 		    });
 		});
 	</script>
