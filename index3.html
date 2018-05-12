@@ -22,7 +22,7 @@
 
 	<div class="container">
 		<div class="page-header">
-		  <h1>Word Sense Disambiguation</h1>
+		  <h1>Statistical Study and Analysis of Polysemy Words in Kannada Language for Various Text Processing Applications</h1>
 		</div>
 	</div>
 
@@ -77,7 +77,15 @@
 		<div class="row">
 			<div id="meaning"></div>
 		</div>
-	</div/>
+	</div>
+
+	<div id="wsd_footer">
+		<div class="footer-copyright"
+		style="color:blue; position: fixed; 
+		margin-left: 400px; margin-top:220px">
+	        © 2018 Copyright: Ramaiah Institute of Technology, Department of Computer Science Engineering
+	 </div>
+	</div>
 	<script>
 		$(document).ready(function(){
 			$("form#kannada").submit(function(e){
@@ -105,7 +113,6 @@
 			});
 
 			$("#preprocess_button").click(function(){
-		        alert("The pre process was clicked");
 		        $("#LoadingImage").show();
 		        $("#input_sentence").html("");
 		        $("#polysemy_word").html("");
@@ -132,7 +139,7 @@
 		    });
 
 		    $("#semantics_button").click(function(){
-		        alert("The semantics was clicked");
+		 
 		        $("#input_sentence").html("");
 		        $("#polysemy_word").html("");
 		        $("#meaning").html("");
@@ -157,7 +164,7 @@
 		    });
 
 		    $("#disambiguate_button").click(function(){
-		        alert("The disambiguate was clicked");
+		        
 		        $("#LoadingImage").show();
 		         $.ajax({
 		            url : 'http://localhost:9080/kannada2/disambiguate',
@@ -170,9 +177,9 @@
 					jsonpCallback: "callbackToken",
 		            success: function(data){
 		            	alert("success");
-		            	$("#input_sentence").html("<b>Input sentence is</b> "+data.input);
-		            	$("#polysemy_word").html("<b>Polysemy Word is</b> "+data.polysemy);
-		            	$("#meaning").html("<b>Matched Meaning is</b> "+data.sense);
+		            	$("#input_sentence").html("<b>Input sentence is</b><p> "+data.input+"</p>");
+		            	$("#polysemy_word").html("<b>Polysemy Word is</b><p> "+data.polysemy+"</p>");
+		            	$("#meaning").html("<b>Matched Meaning is</b><p> "+data.sense+"</p>");
 		            	$("#LoadingImage").hide();
 
 		            },

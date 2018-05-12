@@ -21,7 +21,6 @@
         cache: false,
         async: false,
         success : function(text){
-            alert("success sematic"+i);
             var jq = $(text);
          //var lookupWord = $(text).find('div#amain1.amain table tbody tr td.label1 span b span').text();
          var lookupWord = $(text).find('div#amain1.amain table tbody tr td.label1 span b span').text();
@@ -81,7 +80,6 @@
         //console.log(jsonObj);
         },
         error : function(text){
-              alert("error sematic"+i);
               flag = false;
         }
       });
