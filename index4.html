@@ -8,6 +8,8 @@
 
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 </head>
 
 <body>
@@ -20,6 +22,8 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
 	<div class="container">
 		<div class="page-header">
 		  <h1>Statistical Study and Analysis of Polysemy Words in Kannada Language for Various Text Processing Applications</h1>
@@ -29,6 +33,7 @@
 	<div id="LoadingImage" style="display: none; position:fixed; z-index: 100; margin-left:600px">
 	  <img src="loading.gif" />
 	</div>
+
 
 	<div class="container">
 		<div class="row">
@@ -83,7 +88,7 @@
 		<div class="footer-copyright"
 		style="color:blue; position: fixed; 
 		margin-left: 400px; margin-top:220px">
-	        © 2018 Copyright: Ramaiah Institute of Technology, Department of Computer Science Engineering
+	        © 2018 Ramaiah Institute of Technology, Department of Computer Science Engineering
 	 </div>
 	</div>
 	<script>
@@ -109,7 +114,10 @@
 		            	$("#LoadingImage").hide();
 		            }
 			    });
-				 alert("File Uploaded");
+				  $.alert({
+    				title: 'File Uploaded',
+    				content: 'Upload is successful'
+				});
 				 $("#preprocess_button").attr('disabled',false);
 				 $("#parse_button").attr('disabled',true);
 		         $("#semantics_button").attr('disabled',true);
@@ -132,16 +140,24 @@
 					jsonp: false,
 					jsonpCallback: "callbackToken",
 		            success: function(data){
-		            	alert("success");
+		            	
 		            	$("#LoadingImage").hide();
 		            	$("#preprocess_button").attr('disabled',true);
 				 		$("#parse_button").attr('disabled',false);
 		         		$("#semantics_button").attr('disabled',true);
 				 		$("#disambiguate_button").attr('disabled',true);
+				 		$.alert({
+    						title: 'Preprocessing Completed',
+    						content: 'Data preprocessing is successful'
+						});
 		            },
 		            error: function(text){
-		            	alert("error");
+		            	
 		            	$("#LoadingImage").hide();
+		            	$.alert({
+    						title: 'Error',
+    						content: 'Error while preprocessing. Please try again'
+						});
 		            }
 		        });
 
@@ -162,17 +178,25 @@
 					jsonp: false,
 					jsonpCallback: "callbackToken",
 		            success: function(data){
-		            	alert("success");
+		            	
 		            	$("#LoadingImage").hide();
 		            	$("#preprocess_button").attr('disabled',true);
 				 		$("#parse_button").attr('disabled',true);
 		         		$("#semantics_button").attr('disabled',true);
 				 		$("#disambiguate_button").attr('disabled',false);
+				 		$.alert({
+    						title: 'Semantics Processing Completed',
+    						content: 'Semantic Data Processing is successful'
+						});
 
 		            },
 		            error: function(text){
-		            	alert("error");
+		            	
 		            	$("#LoadingImage").hide();
+		            	$.alert({
+    						title: 'Error',
+    						content: 'Error while semantic Processing. Please try again'
+						});
 		            }
 		        });
 		        window.location.assign("http://localhost:8080/index5.html")
@@ -191,7 +215,7 @@
 					jsonp: false,
 					jsonpCallback: "callbackToken",
 		            success: function(data){
-		            	alert("success");
+		            	
 		            	$("#input_sentence").html("<b>Input sentence is</b><p> "+data.input+"</p>");
 		            	$("#polysemy_word").html("<b>Polysemy Word is</b><p> "+data.polysemy+"</p>");
 		            	$("#meaning").html("<b>Matched Meaning is</b><p> "+data.sense+"</p>");
@@ -203,9 +227,13 @@
 
 		            },
 		            error: function(text){
-		            	alert("error");
+		            	
 		            	//console.log(JSON.stringify(text));
 		            	$("#LoadingImage").hide();
+		            	$.alert({
+    						title: 'Error',
+    						content: 'Error while Disambiguation. Please try again'
+						});
 		            }
 		        });
 		         $("form#kannada")[0].reset();
